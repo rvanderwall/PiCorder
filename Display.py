@@ -1,6 +1,8 @@
 import pygame
 from time import sleep
 
+from ModeTransitions import ModeMap, Mode
+
 #
 # General Display constants
 #
@@ -15,16 +17,21 @@ WHITE = (255, 255, 255)
 # Tricorder Specific Constants
 #
 FPS = 30
-MAX_X = 320
-MAX_Y = 240
+WIDTH = 320
+HEIGHT = 240
 upper_left = (0, 0)
-lower_right = (MAX_X, MAX_Y)
+lower_right = (WIDTH, HEIGHT)
 
 
 class Display:
     def __init__(self):
-        self.surface = pygame.display.set_mode((MAX_X, MAX_Y))
+        self.surface = pygame.display.set_mode((WIDTH, HEIGHT))
         self.frame_rate = pygame.time.Clock()
+        self.mode_mapper = ModeMap()
+
+    def switch_display_modes(self, button):
+        self.mode_mapper.switch_mode(button)
+        self.mode_mapper.show_mode()
 
     def clear(self):
         self.surface.fill(BLACK)
@@ -33,15 +40,20 @@ class Display:
         self.frame_rate.tick(FPS)
 
     def show_splash(self):
-        self.surface.fill(BLACK)
+        self.clear()
         logo = pygame.image.load('assets/PicorderLogoSmall.png')
         self.surface.blit(logo, (90, 0))
+
         font = "assets/babs.otf"
         font_size = 33
         disp_font = pygame.font.Font(font, font_size)
         label = disp_font.render("StarFleet Tricorder TR-109", True, SF_YELLOW)
         self.surface.blit(label, (10, 180))
+
         pygame.display.update()
         for i in range(2):
             pygame.event.get()
             sleep(1)
+
+        # Start off in basic mode.
+        self.mode_mapper.current_mode = Mode.ENV_SLIDER

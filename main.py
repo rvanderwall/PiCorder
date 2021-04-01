@@ -1,8 +1,11 @@
+import sys
+
 import pygame
 from pygame.locals import *
-import sys
+
 from Display import Display
-from Sensor import SensorIndicator, get_temp, get_pressure, get_rh
+from Inputs import Input
+from Sensor import get_indicators
 
 
 def init():
@@ -13,16 +16,9 @@ def init():
     return display
 
 
-def get_indicators():
-    indicators = []
-    indicators.append(SensorIndicator("T", 55, -40.0, 120.0).set_reader(get_temp))
-    indicators.append(SensorIndicator("HPA", 159, 280, 1280).set_reader(get_pressure))
-    indicators.append(SensorIndicator("%RH", 262, 0, 1.00).set_reader(get_rh))
-    return indicators
-
-
 def game_loop(disp):
     sensor_array = get_indicators()
+    inputs = Input()
     while True:
         disp.clear()
         backgraph = pygame.image.load('./assets/backgraph.png')
@@ -35,9 +31,12 @@ def game_loop(disp):
         pygame.display.update()
 
         for event in pygame.event.get():
+            print(event.type)
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
+
+            keys = inputs.get_inputs(event)
 
         disp.tick_display()
 

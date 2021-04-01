@@ -1,6 +1,13 @@
 import pygame
 from Display import Display
 
+def get_indicators():
+    indicators = []
+    indicators.append(SensorIndicator("T", 55, -40.0, 120.0).set_reader(get_temp))
+    indicators.append(SensorIndicator("HPA", 159, 280, 1280).set_reader(get_pressure))
+    indicators.append(SensorIndicator("%RH", 262, 0, 1.00).set_reader(get_rh))
+    return indicators
+
 
 class SensorIndicator:
     def __init__(self, name:str, pos:int, min:float, max:float):
