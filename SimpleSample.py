@@ -149,8 +149,8 @@ def game_loop():
     scales = pygame.image.load('./assets/background.png')
     # ek_movie = pygame.movie.Movie('./asset/ekmd.mov')
 
-    do_indicators = True
-    do_graphs = False
+    do_indicators = False
+    do_graphs = True
     do_vid = False
 
     while True:
@@ -176,6 +176,9 @@ def game_loop():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == KEYDOWN:
+                print(f"Pressed {event.key} key")
+
         frame_rate.tick(FPS)
 
 

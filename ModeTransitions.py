@@ -6,34 +6,36 @@ from Inputs import BUTTON_A, BUTTON_B, BUTTON_C
 class Mode(Enum):
     INIT = -1
     ENV_SLIDER = 0
-    ENV_TEXT = 1
-    ENV_LIGHT_SOUND = 2
+    ENV_GRAPH = 2
 
-    PROXY_SWEEP = 3
-    PROXY_RESET = 4
+    LIGHT_SOUND_SLIDER = 3
+    LIGHT_SOUND_GRAPH = 5
 
-    POSITIONING_GRAPH = 5
-    POSITIONING_3D = 6
-    POSITIONING_TEXT = 7
+    PROXY_SWEEP = 6
+    PROXY_RESET = 7
 
-    MOVIE_EDITH = 8
-    MOVIE_SPOCK = 9
+    POSITIONING_GRAPH = 8
+    POSITIONING_3D = 9
+
+    MOVIE_EDITH = 11
+    MOVIE_SPOCK = 12
+
 
 # Map from current mode to next mode given (button A, button B)
-mode_transition = {}
-mode_transition[Mode.ENV_SLIDER]      = (Mode.PROXY_SWEEP, Mode.ENV_TEXT)
-mode_transition[Mode.ENV_TEXT]        = (Mode.PROXY_SWEEP, Mode.ENV_LIGHT_SOUND)
-mode_transition[Mode.ENV_LIGHT_SOUND] = (Mode.PROXY_SWEEP, Mode.ENV_SLIDER)
+mode_transition = {Mode.ENV_SLIDER:  (Mode.LIGHT_SOUND_SLIDER, Mode.ENV_GRAPH),
+                   Mode.ENV_GRAPH:   (Mode.LIGHT_SOUND_SLIDER, Mode.ENV_SLIDER),
 
-mode_transition[Mode.PROXY_SWEEP] = (Mode.POSITIONING_GRAPH, Mode.PROXY_RESET)
-mode_transition[Mode.PROXY_RESET] = (Mode.POSITIONING_GRAPH, Mode.PROXY_SWEEP)
+                   Mode.LIGHT_SOUND_SLIDER: (Mode.PROXY_SWEEP, Mode.LIGHT_SOUND_GRAPH),
+                   Mode.LIGHT_SOUND_GRAPH: (Mode.PROXY_SWEEP, Mode.LIGHT_SOUND_SLIDER),
 
-mode_transition[Mode.POSITIONING_GRAPH] = (Mode.MOVIE_EDITH, Mode.POSITIONING_3D)
-mode_transition[Mode.POSITIONING_3D]    = (Mode.MOVIE_EDITH, Mode.POSITIONING_TEXT)
-mode_transition[Mode.POSITIONING_TEXT]  = (Mode.MOVIE_EDITH, Mode.POSITIONING_GRAPH)
+                   Mode.PROXY_SWEEP: (Mode.POSITIONING_GRAPH, Mode.PROXY_RESET),
+                   Mode.PROXY_RESET: (Mode.POSITIONING_GRAPH, Mode.PROXY_SWEEP),
 
-mode_transition[Mode.MOVIE_EDITH] = (Mode.ENV_SLIDER, Mode.MOVIE_SPOCK)
-mode_transition[Mode.MOVIE_SPOCK] = (Mode.ENV_SLIDER, Mode.MOVIE_EDITH)
+                   Mode.POSITIONING_GRAPH: (Mode.MOVIE_EDITH, Mode.POSITIONING_3D),
+                   Mode.POSITIONING_3D:    (Mode.MOVIE_EDITH, Mode.POSITIONING_GRAPH),
+
+                   Mode.MOVIE_EDITH: (Mode.ENV_SLIDER, Mode.MOVIE_SPOCK),
+                   Mode.MOVIE_SPOCK: (Mode.ENV_SLIDER, Mode.MOVIE_EDITH)}
 
 
 class ModeMap:

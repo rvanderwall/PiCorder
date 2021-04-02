@@ -5,7 +5,7 @@ from pygame.locals import *
 
 from Display import Display
 from Inputs import Input
-from Sensor import get_indicators
+from Sensor import get_sensor_array
 
 
 def init():
@@ -17,26 +17,22 @@ def init():
 
 
 def game_loop(disp):
-    sensor_array = get_indicators()
+    sensor_array = get_sensor_array()
     inputs = Input()
     while True:
-        disp.clear()
-        backgraph = pygame.image.load('./assets/backgraph.png')
-        scales = pygame.image.load('./assets/background.png')
+        for sensor_type in sensor_array:
+            sensor = sensor_array[sensor_type]
+            sensor.update_value()
 
-        disp.surface.blit(backgraph, (0, 0))
-        disp.surface.blit(scales, (0, 0))
-        for sensor in sensor_array:
-            sensor.draw(disp)
-        pygame.display.update()
+        disp.update(sensor_array)
 
         for event in pygame.event.get():
-            print(event.type)
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
 
-            keys = inputs.get_inputs(event)
+            key = inputs.get_inputs(event)
+            disp.switch_display_modes(key)
 
         disp.tick_display()
 
