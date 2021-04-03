@@ -18,6 +18,16 @@ SI1145 Digital UV/Index/IR/Visible
 https://www.adafruit.com/product/1777
 
 ---
+# Case
+Several choices for a case were looked at.
+The Playmate case was just a bit too small.
+I choice the Diamond Select (a.k.aArt Asylum) for price (about $100 on eBay) and size.
+It looks like it's nearly identical to the one used on set.
+The Master Replica (MR) one was expensive ($500) and I really couldn't find one readily.
+
+Also, the Wand company is making a replica that looks like it will be amazing!
+https://www.thewandcompany.com/star-trek-tricorder/
+But, it's too nice to tear down for the case.
 
 # Other Resources:
 http://www.herocomm.com/SurvivingProps/Tricorders.htm
