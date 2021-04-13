@@ -50,6 +50,10 @@ class ModeMap:
             self.current_mode = Mode.INIT
             return
 
+        # display needs to take us out of init
+        if self.current_mode == Mode.INIT:
+            return
+
         (mode_a, mode_b) = mode_transition[self.current_mode]
         if button == BUTTON_A:
             self.current_mode = mode_a
