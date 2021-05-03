@@ -24,6 +24,7 @@ The Playmate case was just a bit too small.
 I choice the Diamond Select (a.k.aArt Asylum) for price (about $100 on eBay) and size.
 It looks like it's nearly identical to the one used on set.
 The Master Replica (MR) one was expensive ($500) and I really couldn't find one readily.
+The Marko ProBuilt, while rare, would work as well.  it's aluminum construction is much nicer than the plastic in the DS. 
 
 Also, the Wand company is making a replica that looks like it will be amazing!
 https://www.thewandcompany.com/star-trek-tricorder/
