@@ -1,0 +1,3 @@
+Material type: Aluminum
+Material dimensions: 114.3 mm x 73.66 mm x 1.6499999999999997 mm
+Bit: 0.03125 in, Upcut
