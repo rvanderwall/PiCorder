@@ -1,5 +1,6 @@
 import pygame
 
+
 class Assets:
     def __init__(self):
         self.font = "assets/babs.otf"

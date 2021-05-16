@@ -29,5 +29,5 @@ def game_loop(tricorder):
 
 
 if __name__ == '__main__':
-    tricorder = init()
-    game_loop(tricorder)
+    t = init()
+    game_loop(t)

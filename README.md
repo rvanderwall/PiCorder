@@ -69,7 +69,7 @@ Different operation modes have different display modes
 - A: text
 - R: text, video
 
-## Button C - Sub Mode
+## Button C - Command
 - E1: Resets sensors
 - E2: Resets sensors
 - P: Resets sensors

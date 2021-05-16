@@ -5,7 +5,7 @@ from Sensor import AltitudeSensor, AccelerationSensor, MagnetometerSensor, Proxi
 from Sensor import ColorSensor, SoundSensor
 
 from Display import RED, SF_YELLOW, WHITE, ORANGE
-from ModeTransitions import SensorMode
+from ModeTransitions import OperationMode
 
 
 @unique
@@ -26,7 +26,6 @@ class SensorType(Enum):
     SOUND = 9
 
 
-
 #
 #  This is really an indicator array, rather than a sensor array
 #  but I want to be consistent with terminology from the ST universe.
@@ -34,29 +33,29 @@ class SensorType(Enum):
 class SensorArray:
     def __init__(self):
         self.__sensor_array = {
-            SensorMode.ENVIRONMENTAL: {
+            OperationMode.ENVIRONMENTAL: {
                 SensorType.TEMP: Indicator("T", TempSensor()).set_pos(55).set_color(RED),
                 SensorType.PRESSURE: Indicator("HPA", PressureSensor()).set_pos(159).set_color(SF_YELLOW),
                 SensorType.HUMIDITY: Indicator("%RH", HumiditySensor()).set_pos(262).set_color(WHITE)
             },
-            SensorMode.ENVIRONMENTAL2: {
+            OperationMode.ENVIRONMENTAL2: {
                 SensorType.TEMP: Indicator("T", TempSensor()).set_color(RED),
                 SensorType.PRESSURE: Indicator("HPA", PressureSensor()).set_color(SF_YELLOW),
                 SensorType.HUMIDITY: Indicator("%RH", HumiditySensor()).set_color(WHITE),
                 SensorType.ALTITUDE: Indicator("ALT", AltitudeSensor()).set_color(ORANGE)
             },
-            SensorMode.POSITIONAL: {
+            OperationMode.POSITIONAL: {
                 SensorType.ACCELEROMETER: Indicator("ACC", AccelerationSensor()).set_color(RED),
                 SensorType.MAGNETOMETER: Indicator("MAG", MagnetometerSensor()).set_color(SF_YELLOW),
                 SensorType.PROXIMITY: Indicator("PROX", ProximitySensor()).set_color(WHITE),
             },
-            SensorMode.AUDIO_VISUAL: {
+            OperationMode.AUDIO_VISUAL: {
                 SensorType.RGB_COLOR: Indicator("RGB", ColorSensor()).set_color(RED),
                 SensorType.SOUND: Indicator("dB", SoundSensor()).set_color(RED),
             }
         }
 
-    def get_sensor_bank(self, sensor_mode: SensorMode):
+    def get_sensor_bank(self, sensor_mode: OperationMode):
         if sensor_mode in self.__sensor_array:
             sensor_bank = self.__sensor_array[sensor_mode]
         else:

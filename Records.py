@@ -12,10 +12,18 @@ class Records:
     Archival records, video, images, and text
     """
     def __init__(self, assets: Assets):
-        self.edith_record = Record(assets.edith)
-        self.edith_record.text = "Edith Keeler. social worker."
-        self.spock_record = Record(assets.spock)
-        self.spock_record.text = "Spock. Scienct officer, Vulcan"
+        self._edith_record = Record(assets.edith)
+        self._edith_record.text = "Edith Keeler. social worker."
+        self._spock_record = Record(assets.spock)
+        self._spock_record.text = "Spock. Scienct officer, Vulcan"
+
+        self._cur = self._edith_record
 
     def get_current_record(self):
-        return self.spock_record
+        return self._cur
+
+    def next_record(self):
+        if self._cur == self._edith_record:
+            self._cur = self._spock_record
+        else:
+            self._cur = self._edith_record

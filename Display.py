@@ -8,13 +8,13 @@ from Records import Record
 #
 # General Display constants
 #
-RED       = (255, 0, 0)
-GREEN     = (0, 255, 0)
-BLUE      = (0, 0, 255)
-ORANGE    = (255, 140, 0)
-SF_YELLOW = (250, 225, 88)
-BLACK     = (0, 0, 0)
-WHITE     = (255, 255, 255)
+RED = (255,   0,   0)
+GREEN = (0,   255,   0)
+BLUE = (0,     0, 255)
+ORANGE = (255, 140,   0)
+SF_YELLOW = (250, 225,  88)
+BLACK = (0,     0,   0)
+WHITE = (255, 255, 255)
 
 #
 # Tricorder display Constants
@@ -38,6 +38,7 @@ class Display:
         self._grid = assets.grid
         self._slider_img = assets.slider_img
         self._logo = assets.logo
+        self._lbl_vertical = False    # If labels are horizontal or vertical
 
     def clear(self):
         self._surface.fill(BLACK)
@@ -48,7 +49,7 @@ class Display:
     def update(self, mode, data_src):
         self.clear()
         if mode == DisplayMode.SPLASH:
-            self.show_splash()
+            self._show_splash()
         elif isinstance(data_src, Record):
             if mode == DisplayMode.VIDEO:
                 self._draw_image(data_src.image, 0, 0)
@@ -112,14 +113,16 @@ class Display:
             lbl_idx += 1
 
     def _label_pos(self, lbl_num):
-        # Stack Horizontally
-        x_lbl_pos = 20 + lbl_num * 65
-        y_lbl_pos = 206
+        if self._lbl_vertical:
+            # Stack Vertically
+            x_lbl_pos = 20
+            y_lbl_pos = HEIGHT / 2 + 30
+            y_lbl_pos += lbl_num * 20
+        else:
+            # Stack Horizontally
+            x_lbl_pos = 20 + lbl_num * 65
+            y_lbl_pos = 206
 
-        # Stack Vertically
-        # x_lbl_pos = 20
-        # y_lbl_pos = HEIGHT / 2 + 30
-        # y_lbl_pos += lbl_num * 20
         return x_lbl_pos, y_lbl_pos
 
     def _update_to_unknown(self, mode):
@@ -135,7 +138,7 @@ class Display:
         width = 3
         pygame.draw.lines(self._surface, color, False, data, width)
 
-    def show_splash(self):
+    def _show_splash(self):
         self.clear()
         self._surface.blit(self._logo, (90, 0))
 
