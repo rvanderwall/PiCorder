@@ -1,20 +1,23 @@
 import pygame
-from time import sleep
 
-from ModeTransitions import ModeMap, Mode
+from Assets import Assets
+from ModeTransitions import DisplayMode
+from Indicator import Indicator
+from Records import Record
 
 #
 # General Display constants
 #
-RED   = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE  = (0, 0, 255)
+RED       = (255, 0, 0)
+GREEN     = (0, 255, 0)
+BLUE      = (0, 0, 255)
+ORANGE    = (255, 140, 0)
 SF_YELLOW = (250, 225, 88)
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
+BLACK     = (0, 0, 0)
+WHITE     = (255, 255, 255)
 
 #
-# Tricorder Specific Constants
+# Tricorder display Constants
 #
 FPS = 30
 WIDTH = 320
@@ -24,87 +27,119 @@ lower_right = (WIDTH, HEIGHT)
 
 
 class Display:
-    def __init__(self):
-        self.surface = pygame.display.set_mode((WIDTH, HEIGHT))
-        self.frame_rate = pygame.time.Clock()
-        self.mode_mapper = ModeMap()
-        self.scales = pygame.image.load('./assets/background.png')
-        self.grid = pygame.image.load('./assets/backgraph.png')
-        self.font = "assets/babs.otf"
+    def __init__(self, assets: Assets):
+        self._surface = pygame.display.set_mode((WIDTH, HEIGHT))
+        self._frame_rate = pygame.time.Clock()
 
-    def switch_display_modes(self, button):
-        self.mode_mapper.switch_mode(button)
-        self.mode_mapper.show_mode()
+        # Load assets
+        self._font = assets.font
+
+        self._scales = assets.scales
+        self._grid = assets.grid
+        self._slider_img = assets.slider_img
+        self._logo = assets.logo
 
     def clear(self):
-        self.surface.fill(BLACK)
+        self._surface.fill(BLACK)
 
     def tick_display(self):
-        self.frame_rate.tick(FPS)
+        self._frame_rate.tick(FPS)
 
-    def update(self, sensor_array):
+    def update(self, mode, data_src):
         self.clear()
-        mode = self.mode_mapper.current_mode
-        if mode == Mode.ENV_SLIDER:
-            self._update_env_slider(sensor_array)
-        elif mode == Mode.ENV_GRAPH:
-            self._update_env_graph(sensor_array)
-        elif mode == Mode.MOVIE_EDITH:
-            self._edith_movie()
-        elif mode == Mode.MOVIE_SPOCK:
-            self._spock_movie()
+        if mode == DisplayMode.SPLASH:
+            self.show_splash()
+        elif isinstance(data_src, Record):
+            if mode == DisplayMode.VIDEO:
+                self._draw_image(data_src.image, 0, 0)
+            elif mode == DisplayMode.TEXT:
+                self._update_string_text(data_src.text)
         else:
-            self._update_to_unknown(mode)
+            self._update_sensor_disp(mode, data_src)
         pygame.display.update()
 
-    def _update_env_slider(self, sensor_array):
-        self.surface.blit(self.scales, (0, 0))
-        for sensor_type in sensor_array:
-            sensor = sensor_array[sensor_type]
-            sensor.render_as_pointer(self)
+    def _update_sensor_disp(self, mode, sensor_array):
+        if mode == DisplayMode.SLIDER:
+            self._update_sliders(sensor_array)
+        elif mode == DisplayMode.GRAPH:
+            self._update_graphs(sensor_array)
+        elif mode == DisplayMode.TEXT:
+            self._update_sensor_text(sensor_array)
+        else:
+            self._update_to_unknown(mode)
 
-    def _update_env_graph(self, sensor_array):
+    def _update_sliders(self, sensor_array):
+        self._surface.blit(self._scales, (0, 0))
+        for sensor_type in sensor_array:
+            indicator = sensor_array[sensor_type]
+            assert isinstance(indicator, Indicator)
+            self._draw_image(self._slider_img, *indicator.get_position())
+
+    def _update_string_text(self, str_text):
         font_size = 15
-        disp_font = pygame.font.Font(self.font, font_size)
-        self.surface.blit(self.grid, (0, 0))
-        y_pos = HEIGHT / 2 + 30
+        disp_font = pygame.font.Font(self._font, font_size)
+        text = disp_font.render(str_text, True, SF_YELLOW)
+        x_lbl_pos, y_lbl_pos = (20, 20)
+        self._surface.blit(text, (x_lbl_pos, y_lbl_pos))
+
+    def _update_sensor_text(self, sensor_array):
+        font_size = 15
+        disp_font = pygame.font.Font(self._font, font_size)
+        lbl_idx = 0
         for sensor_type in sensor_array:
-            sensor = sensor_array[sensor_type]
-            sensor.render_as_graph(self)
-            lbl = f"{sensor.name} {sensor.cur_val:.2f}"
-            label = disp_font.render(lbl, True, sensor.color)
-            self.surface.blit(label, (20, y_pos))
-            y_pos += 15
+            indicator = sensor_array[sensor_type]
+            assert isinstance(indicator, Indicator)
+            lbl = f"{indicator.label} {indicator.cur_val:.2f}"
+            label = disp_font.render(lbl, True, indicator.color)
+            x_lbl_pos, y_lbl_pos = self._label_pos(lbl_idx)
+            self._surface.blit(label, (x_lbl_pos, y_lbl_pos))
+            lbl_idx += 1
 
-    def _edith_movie(self):
-        edith = pygame.image.load('./assets/Edith.jpeg')
-        self.surface.blit(edith, (0, 0))
+    def _update_graphs(self, sensor_array):
+        font_size = 15
+        disp_font = pygame.font.Font(self._font, font_size)
+        self._surface.blit(self._grid, (0, 0))
+        lbl_idx = 0
+        for sensor_type in sensor_array:
+            indicator = sensor_array[sensor_type]
+            assert isinstance(indicator, Indicator)
+            self._draw_lines(indicator.color, indicator.get_history())
 
-    def _spock_movie(self):
-        spock = pygame.image.load('./assets/spock.png')
-        self.surface.blit(spock, (0, 0))
+            lbl = f"{indicator.label} {indicator.cur_val:.2f}"
+            label = disp_font.render(lbl, True, indicator.color)
+            x_lbl_pos, y_lbl_pos = self._label_pos(lbl_idx)
+            self._surface.blit(label, (x_lbl_pos, y_lbl_pos))
+            lbl_idx += 1
+
+    def _label_pos(self, lbl_num):
+        # Stack Horizontally
+        x_lbl_pos = 20 + lbl_num * 65
+        y_lbl_pos = 206
+
+        # Stack Vertically
+        # x_lbl_pos = 20
+        # y_lbl_pos = HEIGHT / 2 + 30
+        # y_lbl_pos += lbl_num * 20
+        return x_lbl_pos, y_lbl_pos
 
     def _update_to_unknown(self, mode):
-        font_size = 25
-        disp_font = pygame.font.Font(self.font, font_size)
+        font_size = 15
+        disp_font = pygame.font.Font(self._font, font_size)
         label = disp_font.render(f"Unknown mode: {mode}", True, SF_YELLOW)
-        self.surface.blit(label, (10, 180))
+        self._surface.blit(label, (10, 180))
+
+    def _draw_image(self, img, x, y):
+        self._surface.blit(img, (x, y))
+
+    def _draw_lines(self, color, data):
+        width = 3
+        pygame.draw.lines(self._surface, color, False, data, width)
 
     def show_splash(self):
         self.clear()
-        logo = pygame.image.load('assets/PicorderLogoSmall.png')
-        self.surface.blit(logo, (90, 0))
+        self._surface.blit(self._logo, (90, 0))
 
-        font = "assets/babs.otf"
         font_size = 33
-        disp_font = pygame.font.Font(font, font_size)
+        disp_font = pygame.font.Font(self._font, font_size)
         label = disp_font.render("StarFleet Tricorder TR-109", True, SF_YELLOW)
-        self.surface.blit(label, (10, 180))
-
-        pygame.display.update()
-        for i in range(2):
-            pygame.event.get()
-            sleep(1)
-
-        # Start off in basic mode.
-        self.mode_mapper.current_mode = Mode.ENV_SLIDER
+        self._surface.blit(label, (10, 180))
