@@ -21,10 +21,10 @@ https://www.adafruit.com/product/1777
 # Case
 Several choices for a case were looked at.
 - The Playmate case was just a bit too small.
-- I chose the Diamond Select (a.k.aArt Asylum) for price (about $100 on eBay) and size.
+- I chose the Diamond Select (a.k.a Art Asylum) for the price (about $100 on eBay) and size.
 - It looks like it's nearly identical to the one used on set.
-- The Master Replica (MR) one was expensive ($500) and I really couldn't find one readily.
-- The Marko ProBuilt, while rare, would work as well.  It's aluminum construction is much nicer than the plastic in the DS. 
+- The Master Replica (MR) one was expensive ($500) and I really couldn't find one readily but is really well constructed.
+- The Marko ProBuilt, while rare, would work as well.  It's aluminum construction is much nicer than the plastic in the DS but it's expensive when I could even find one. 
 
 - Also, the Wand company is making a replica that looks like it will be amazing!
 - https://www.thewandcompany.com/star-trek-tricorder/
