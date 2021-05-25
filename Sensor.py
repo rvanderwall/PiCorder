@@ -2,6 +2,12 @@ from abc import ABC, abstractmethod
 from math import sin, cos
 import time
 
+import board
+import adafruit_sht31d
+import Adafruit_GPIO.SPI as SPI
+import Adafruit_SSD1306 as SSD
+
+
 
 class Sensor(ABC):
     def __init__(self, min_val: float, max_val: float):
@@ -21,8 +27,11 @@ class TempSensor(Sensor):
         super().__init__(min_val=-40.0, max_val=120.0)
 
     def get_sensor_value(self):
-        ts = time.time() * 10
-        return 30.0 + 5 * sin(ts / 10)
+#        ts = time.time() * 10
+#        return 30.0 + 5 * sin(ts / 10)
+        sensor = get_sensor()
+        c = sensor.temperature
+        return c
 
 
 class PressureSensor(Sensor):
@@ -36,10 +45,13 @@ class PressureSensor(Sensor):
 
 class HumiditySensor(Sensor):
     def __init__(self):
-        super().__init__(min_val=0.00, max_val=1.00)
+        super().__init__(min_val=0.00, max_val=100)
 
     def get_sensor_value(self):
-        return .45
+#        return 45
+        sensor = get_sensor()
+        h = sensor.relative_humidity
+        return h
 
 
 class AltitudeSensor(Sensor):
@@ -92,3 +104,10 @@ class SoundSensor(Sensor):
 
     def get_sensor_value(self):
         return 95
+
+
+def get_sensor():
+    i2c = board.I2C()
+    sensor = adafruit_sht31d.SHT31D(i2c)
+    return sensor
+
