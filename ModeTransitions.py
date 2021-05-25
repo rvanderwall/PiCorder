@@ -1,6 +1,6 @@
 from enum import Enum, unique
 from Inputs import BUTTON_A, BUTTON_B, BUTTON_C
-
+from Logger import Logger
 
 @unique
 class TricorderMode(Enum):
@@ -57,7 +57,8 @@ command_map = {
 
 
 class ModeMapper:
-    def __init__(self):
+    def __init__(self, logger: Logger):
+        self.logger = logger
         self.current_op_mode = OperationMode.INIT
         self.current_disp_mode_idx = 0
         self._set_disp_mode()
@@ -99,7 +100,7 @@ class ModeMapper:
         return Commands.NOOP
 
     def show_mode(self):
-        print(f"Current mode: {self.current_op_mode}:{self.current_disp_mode}")
+        self.logger.info(f"Current mode: {self.current_op_mode}:{self.current_disp_mode}")
 
     def _set_disp_mode(self):
         disp_modes = display_mode_map[self.current_op_mode]

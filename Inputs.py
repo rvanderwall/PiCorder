@@ -1,4 +1,5 @@
 import pygame
+from Logger import Logger
 
 BUTTON_A = 0
 BUTTON_B = 1
@@ -6,7 +7,8 @@ BUTTON_C = 2
 
 
 class Input:
-    def __init__(self):
+    def __init__(self, logger: Logger):
+        self._log = logger.info
         self.current_button = None
         self._verbose = True
 
@@ -26,7 +28,3 @@ class Input:
             self.current_button = None
 
         return self.current_button
-
-    def _log(self, msg):
-        if self._verbose:
-            print(msg)

@@ -4,6 +4,7 @@ import pygame
 from Assets import Assets
 from Display import Display
 from Inputs import Input
+from Logger import Logger
 from ModeTransitions import ModeMapper, Commands
 from ModeTransitions import TricorderMode, OperationMode
 from Records import Records
@@ -11,18 +12,20 @@ from SensorArray import SensorArray
 
 
 def build_tricorder():
+    logger = Logger("Tricorder")
     assets = Assets()
     display = Display(assets)
     sensor_array = SensorArray()
-    mode_mapper = ModeMapper()
-    tricorder = Tricorder(display, sensor_array, mode_mapper)
-    tricorder._inputs = Input()
+    mode_mapper = ModeMapper(logger)
+    tricorder = Tricorder(logger, display, sensor_array, mode_mapper)
+    tricorder._inputs = Input(logger)
     tricorder._records = Records(assets)
     return tricorder
 
 
 class Tricorder:
-    def __init__(self, display: Display, sensor_array: SensorArray, mode_mapper: ModeMapper):
+    def __init__(self, logger: Logger, display: Display, sensor_array: SensorArray, mode_mapper: ModeMapper):
+        self.logger = logger
         self._display = display
         self._sensor_array = sensor_array
         self._mode_mapper = mode_mapper
@@ -70,7 +73,7 @@ class Tricorder:
         if command == Commands.RESET:
             self._mode_mapper.enter_mode(OperationMode.INIT)
         elif command == Commands.RECORD:
-            self.log("Cannot record yet")
+            self.logger.error("Cannot record yet")
         elif command == Commands.NEXT:
             self._records.next_record()
         else:
@@ -79,14 +82,10 @@ class Tricorder:
     def _restart(self):
         self.update_display()
         pygame.event.get()      # Release control back to event loop to update display
-        self._init_sensors()
         self._mode_mapper.enter_mode(OperationMode.ENVIRONMENTAL)
+        self._init_sensors()
 
     @staticmethod
     def _init_sensors():
         for i in range(2):
             sleep(1)
-
-    @staticmethod
-    def log(msg):
-        print(msg)
