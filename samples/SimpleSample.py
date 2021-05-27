@@ -34,7 +34,7 @@ class IndicatorSensor:
         self.max = max
         self.position = pos
         self.reader = None
-        self.slider = pygame.image.load('assets/slider.png')
+        self.slider = pygame.image.load('../assets/slider.png')
         self.graph_top = 3
         self.graph_bottom = 200
         self.scale = (self.graph_bottom - self.graph_top) / (self.max - self.min)
@@ -125,7 +125,7 @@ def get_indicators():
 
 def show_splash(surface):
     surface.fill(BLACK)
-    logo = pygame.image.load('assets/PicorderLogoSmall.png')
+    logo = pygame.image.load('../assets/PicorderLogoSmall.png')
     surface.blit(logo, (90, 0))
     font = "assets/babs.otf"
     font_size = 33
@@ -145,8 +145,8 @@ def game_loop():
     frame_rate = pygame.time.Clock()
     indicator_array = get_indicators()
     graph_array = get_graphs()
-    grid = pygame.image.load('./assets/backgraph.png')
-    scales = pygame.image.load('./assets/background.png')
+    grid = pygame.image.load('../assets/backgraph.png')
+    scales = pygame.image.load('../assets/background.png')
     # ek_movie = pygame.movie.Movie('./asset/ekmd.mov')
 
     do_indicators = False
