@@ -1,6 +1,7 @@
 .DS_STORE
 .idea/
 venv/
+t_env/
 
 *.pyc
 

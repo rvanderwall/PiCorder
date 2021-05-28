@@ -1,14 +1,15 @@
 try:
     import board
     import adafruit_sht31d
-    import Adafruit_GPIO.SPI as SPI
-    import Adafruit_SSD1306 as SSD
-except:
+except Exception as ex:
+    print(ex)
     print("Cannot import required libraries")
 
 
 def get_SHT31():
+    print("Get i2c board")
     i2c = board.I2C()
+    print("Get sensor")
     sensor = adafruit_sht31d.SHT31D(i2c)
     for idx in range(5):
         h = sensor.relative_humidity

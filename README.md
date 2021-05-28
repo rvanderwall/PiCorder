@@ -49,6 +49,17 @@ Several choices for a case were looked at.
 - SensorArray: Collection of sensors for each mode.
 - Tricorder: overall coordination and modes: demo, live, simulated.
 
+- cd <project>
+- python3 -m venv venv
+- source venv/bin/activate
+- pip install --upgrade pip
+- pip install Pillow
+- pip install pygame==1.9.4
+- pip install board
+- pip install adafruit-circuitpython-sht31d
+- pip install AdaFruit-GPIO
+- Enable I2C:  Config->Interfaces
+
 
 
 # Operating instructions
