@@ -16,9 +16,9 @@ https://www.adafruit.com/product/2860
 ## Sensors:
 | Sensor | I2C adr | Description |
 | ------ | -----| ---------------|
-| SHT31 | x44 | Temperature/Humidity |
+| SHT31-D | x44 | Temperature/Humidity |
 | BMP280 | x77 | Pressure/Temperature/Altitude |
-| LSM303 | x19 | Accellerometer/Magnetometer |
+| LSM303AGR | x19 | Accellerometer/Magnetometer |
 | ILI9340C | SPI | 2.2" TFT Display|
 
 ---
@@ -62,6 +62,8 @@ Several choices for a case were looked at.
 - pip install board
 - pip install adafruit-circuitpython-sht31d
 - pip install adafruit-circuitpython-bmp280
+- pip install adafruit-circuitpython-lis2mdl
+- pip install adafruit-circuitpython-lsm303-accel
 - pip install AdaFruit-GPIO
 - Enable I2C:  Config->Interfaces
 
