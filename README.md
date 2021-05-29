@@ -14,10 +14,12 @@ NeoPixel Jewel - 7
 https://www.adafruit.com/product/2860
 
 ## Sensors:
-- SHT31 Temp humidity
-- BMP280 Temp pressure altitude
-- SI1145 Digital UV/Index/IR/Visible
-- https://www.adafruit.com/product/1777
+| Sensor | I2C adr | Description |
+| ------ | -----| ---------------|
+| SHT31 | x44 | Temperature/Humidity |
+| BMP280 | x77 | Pressure/Temperature/Altitude |
+| LSM303 | x19 | Accellerometer/Magnetometer |
+| ILI9340C | SPI | 2.2" TFT Display|
 
 ---
 # Case
