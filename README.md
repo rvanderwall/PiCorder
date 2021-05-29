@@ -59,6 +59,7 @@ Several choices for a case were looked at.
 - pip install pygame==1.9.4
 - pip install board
 - pip install adafruit-circuitpython-sht31d
+- pip install adafruit-circuitpython-bmp280
 - pip install AdaFruit-GPIO
 - Enable I2C:  Config->Interfaces
 
