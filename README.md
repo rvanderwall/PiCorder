@@ -14,8 +14,10 @@ NeoPixel Jewel - 7
 https://www.adafruit.com/product/2860
 
 ## Sensors:
-SI1145 Digital UV/Index/IR/Visible
-https://www.adafruit.com/product/1777
+- SHT31 Temp humidity
+- BMP280 Temp pressure altitude
+- SI1145 Digital UV/Index/IR/Visible
+- https://www.adafruit.com/product/1777
 
 ---
 # Case
