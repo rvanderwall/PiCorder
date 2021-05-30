@@ -57,14 +57,15 @@ def get_all():
     bmp280.sea_level_pressure = 1013.25
     accel = adafruit_lsm303_accel.LSM303_Accel(i2c)
     mag = adafruit_lis2mdl.LIS2MDL(i2c)
-    for idx in range(5):
+    for idx in range(100):
+        print("----")
         t = bmp280.temperature
         p = bmp280.pressure
-        print(f"Temp:{c} and humidity:{h}")
         a = bmp280.altitude
+        print(f"Temp:{t}, pressure:{p}, altitude:{a}")
         c = sht31.temperature
         h = sht31.relative_humidity
-        print(f"Temp:{t}, pressure:{p}, altitude:{a}")
+        print(f"Temp:{c} and humidity:{h}")
         a = accel.acceleration
         m = mag.magnetic
         print(f"Accel:{a}, Magnetic:{m}")

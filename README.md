@@ -64,8 +64,11 @@ Several choices for a case were looked at.
 - pip install adafruit-circuitpython-bmp280
 - pip install adafruit-circuitpython-lis2mdl
 - pip install adafruit-circuitpython-lsm303-accel
+- pip install adafruit-circuitpython-ili9341
+- pip install adafruit-circuitpython-rgb-display
 - pip install AdaFruit-GPIO
 - Enable I2C:  Config->Interfaces
+- ENable SPI: raspi-config->Interface
 
 
 
