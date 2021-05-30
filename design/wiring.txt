@@ -1,0 +1,32 @@
+
+SHT31-D	: Standard I2C, pin 2,3
+LMS303:   Standard I2C.  SCL=SCL  SDI= SDA
+
+ILI9340:
+https://learn.adafruit.com/adafruit-2-8-and-3-2-color-tft-touchscreen-breakout-v2/python-wiring-and-setup
+
+DISP		PI
+VIN		3.3V
+GND		GND
+CLK/SPI		SCK/SPI
+MOSI		MOSI
+
+LCD CS		GPIO 0		# Chip Select
+D/C		GPIO 15		# Data/Command
+
+LCD CS		CEO		# Chip Select
+D/C		GPIO 18		# Data/Command
+RESET		GPIO 23
+
+LCD CS		CEO		# Chip Select
+D/C		GPIO 25		# Data/Command
+RESET		GPIO 24
+
+
+N/C		LCD CS
+N/C		MISO
+N/C		Backlight
+
+
+https://learn.adafruit.com/micropython-hardware-ili9341-tft-and-featherwing/circuitpython
+
