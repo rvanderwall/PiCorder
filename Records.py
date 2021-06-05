@@ -15,7 +15,7 @@ class Records:
         self._edith_record = Record(assets.edith)
         self._edith_record.text = "Edith Keeler. social worker."
         self._spock_record = Record(assets.spock)
-        self._spock_record.text = "Spock. Scienct officer, Vulcan"
+        self._spock_record.text = "Spock. Science officer, Vulcan"
 
         self._cur = self._edith_record
 

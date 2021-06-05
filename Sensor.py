@@ -6,8 +6,9 @@ from Logger import Logger
 try:
     import board
     import adafruit_sht31d
-    import Adafruit_GPIO.SPI as SPI
-    import Adafruit_SSD1306 as SSD
+    import adafruit_bmp280
+    import adafruit_lsm303_accel
+    import adafruit_lis2mdl
     SENSOR_MODE = "Operational"
     lg = Logger("Startup")
     lg.info("Entering operational sensor mode")
@@ -49,9 +50,24 @@ class TempSensor(Sensor):
        return 30.0 + 5 * sin(ts / 10)
 
     def get_real_sensor_value(self):
-        sensor = get_sensor()
-        c = sensor.temperature
-        return c
+        sht_sensor = get_sht_sensor()
+        t1 = sht_sensor.temperature
+        bmp_sensor = get_bmp_sensor()
+        t2 = bmp_sensor.temperature
+        return t1 + t2 / 2.0
+
+
+class HumiditySensor(Sensor):
+    def __init__(self):
+        super().__init__(min_val=0.00, max_val=100)
+
+    def get_emulation_sensor_value(self):
+        return 45
+
+    def get_real_sensor_value(self):
+        sensor = get_sht_sensor()
+        h = sensor.relative_humidity
+        return h
 
 
 class PressureSensor(Sensor):
@@ -63,20 +79,9 @@ class PressureSensor(Sensor):
         return 980.0 + 50 * cos(ts / 20)
 
     def get_real_sensor_value(self):
-        return 0.00
-
-
-class HumiditySensor(Sensor):
-    def __init__(self):
-        super().__init__(min_val=0.00, max_val=100)
-
-    def get_emulation_sensor_value(self):
-        return 45
-
-    def get_real_sensor_value(self):
-        sensor = get_sensor()
-        h = sensor.relative_humidity
-        return h
+        sensor = get_bmp_sensor()
+        p = sensor.pressure
+        return p
 
 
 class AltitudeSensor(Sensor):
@@ -88,18 +93,9 @@ class AltitudeSensor(Sensor):
         return 1000.0 + 500 * cos(ts / 23)
 
     def get_real_sensor_value(self):
-        return 0.0
-
-
-class ProximitySensor(Sensor):
-    def __init__(self):
-        super().__init__(min_val=0, max_val=5000)
-
-    def get_emulation_sensor_value(self):
-        return 123
-
-    def get_real_sensor_value(self):
-        return 0.0
+        sensor = get_bmp_sensor()
+        a = sensor.altitude
+        return a
 
 
 class AccelerationSensor(Sensor):
@@ -108,10 +104,12 @@ class AccelerationSensor(Sensor):
 
     def get_emulation_sensor_value(self):
         # return (1.0, 0.0, 0.0)
-        return 1.0
+        return (1.0, 0.0, 0.2)
 
     def get_real_sensor_value(self):
-        return 0.0
+        sensor = get_lsm_sensors()
+        accel = sensor.acceleration
+        return accel
 
 
 class MagnetometerSensor(Sensor):
@@ -120,7 +118,20 @@ class MagnetometerSensor(Sensor):
 
     def get_emulation_sensor_value(self):
         # return (0.5, 0.5, 0.0)
-        return 0.5
+        return 125.0, -100.0, 500.0
+
+    def get_real_sensor_value(self):
+        sensor = get_lis_sensor()
+        m = sensor.magnetic
+        return m
+
+
+class ProximitySensor(Sensor):
+    def __init__(self):
+        super().__init__(min_val=0, max_val=5000)
+
+    def get_emulation_sensor_value(self):
+        return 123
 
     def get_real_sensor_value(self):
         return 0.0
@@ -149,8 +160,28 @@ class SoundSensor(Sensor):
         return 0.0
 
 
-def get_sensor():
+def get_sht_sensor():
+    # temperature, relative_humidity
     i2c = board.I2C()
     sensor = adafruit_sht31d.SHT31D(i2c)
     return sensor
 
+
+def get_bmp_sensor():
+    # temperature, pressure, altitude
+    i2c = board.I2C()
+    sensor = adafruit_bmp280.Adafruit_BMP280_I2C(i2c)
+    sensor.sea_level_pressure = 1013.25
+
+
+def get_lsm_sensors():
+    # acceleration
+    i2c = board.I2C()
+    accel = adafruit_lsm303_accel.LSM303_Accel(i2c)
+    return accel
+
+
+def get_lis_sensor():
+    i2c = board.I2C()
+    mag = adafruit_lis2mdl.LIS2MDL(i2c)
+    return mag

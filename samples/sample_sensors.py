@@ -12,6 +12,7 @@ except Exception as ex:
 # I2C Debugging
 #  i2cdiscover 1
 
+
 def get_SHT31():
     print("Get i2c board")
     i2c = board.I2C()
@@ -22,6 +23,7 @@ def get_SHT31():
         c = sensor.temperature
         print(f"Temp:{c} and humidity:{h}")
         sleep(1)
+
 
 def get_BMP280():
     print("Get i2c board")
@@ -35,7 +37,8 @@ def get_BMP280():
         a = sensor.altitude
         print(f"Temp:{t}, pressure:{p}, altitude:{a}")
         sleep(1)
-        
+
+
 def get_LSM303AGR():
     print("Get i2c board")
     i2c = board.I2C()
@@ -47,7 +50,8 @@ def get_LSM303AGR():
         m = mag.magnetic
         print(f"Accel:{a}, Magnetic:{m}")
         sleep(1)
-        
+
+
 def get_all():
     print("Get i2c board")
     i2c = board.I2C()
@@ -71,12 +75,14 @@ def get_all():
         print(f"Accel:{a}, Magnetic:{m}")
         sleep(1)
 
+
 sensors = [
     ("SHT31-D",get_SHT31),
     ("BMP280",get_BMP280),
     ("LSM303AGR",get_LSM303AGR),
     ("all",get_all),
     ("exit",exit)]
+
 
 def run():
     while True:

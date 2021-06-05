@@ -1,4 +1,4 @@
-# Tricorder on a Raspberry pi
+# Tricorder on a Raspberry Pi
 
 # Hardware:
 ## CPU
@@ -18,7 +18,7 @@ https://www.adafruit.com/product/2860
 | ------ | -----| ---------------|
 | SHT31-D | x44 | Temperature/Humidity |
 | BMP280 | x77 | Pressure/Temperature/Altitude |
-| LSM303AGR | x19 | Accellerometer/Magnetometer |
+| LSM303AGR | x19 | Accelerometer/Magnetometer |
 | ILI9340C | SPI | 2.2" TFT Display|
 
 ---
@@ -26,8 +26,9 @@ https://www.adafruit.com/product/2860
 Several choices for a case were looked at.
 - The Playmate case was just a bit too small.
 - I chose the Diamond Select (a.k.a Art Asylum) for the price (about $100 on eBay) and size.
-- It looks like it's nearly identical to the one used on set.
-- The Master Replica (MR) one was expensive ($500) and I really couldn't find one readily but is really well constructed.
+It looks like it's nearly identical to the one used on set.
+- The Master Replica (MR) one was expensive ($500) and I really couldn't find one readily 
+but they look really well constructed.
 - The Marko ProBuilt, while rare, would work as well.  It's aluminum construction is much nicer than the plastic in the DS but it's expensive when I could even find one. 
 
 - Also, the Wand company is making a replica that looks like it will be amazing!
@@ -53,23 +54,24 @@ Several choices for a case were looked at.
 - SensorArray: Collection of sensors for each mode.
 - Tricorder: overall coordination and modes: demo, live, simulated.
 
-- cd <project>
-- python3 -m venv venv
-- source venv/bin/activate
-- pip install --upgrade pip
-- pip install Pillow
-- pip install pygame==1.9.4
-- pip install board
-- pip install adafruit-circuitpython-sht31d
-- pip install adafruit-circuitpython-bmp280
-- pip install adafruit-circuitpython-lis2mdl
-- pip install adafruit-circuitpython-lsm303-accel
-- pip install adafruit-circuitpython-ili9341
-- pip install adafruit-circuitpython-rgb-display
-- pip install AdaFruit-GPIO
-- Enable I2C:  Config->Interfaces
-- ENable SPI: raspi-config->Interface
-
+```
+> cd <project>
+> python3 -m venv venv
+> source venv/bin/activate
+> pip install --upgrade pip
+> pip install Pillow
+> pip install pygame==1.9.4
+> pip install board
+> pip install adafruit-circuitpython-sht31d
+> pip install adafruit-circuitpython-bmp280
+> pip install adafruit-circuitpython-lis2mdl
+> pip install adafruit-circuitpython-lsm303-accel
+> pip install adafruit-circuitpython-ili9341
+> pip install adafruit-circuitpython-rgb-display
+> pip install AdaFruit-GPIO
+# Enable I2C:  Config->Interfaces
+# Enable SPI: raspi-config->Interface
+```
 
 
 # Operating instructions
