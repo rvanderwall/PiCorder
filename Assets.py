@@ -1,4 +1,5 @@
 import pygame
+from PIL import Image
 
 
 class Assets:
@@ -10,3 +11,4 @@ class Assets:
         self.edith = pygame.image.load('./assets/Edith.jpeg')
         self.spock = pygame.image.load('./assets/spock.png')
         self.logo = pygame.image.load('assets/PicorderLogoSmall.png')
+        # self.logo = Image.open('assets/PicorderLogoSmall.png')

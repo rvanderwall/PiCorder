@@ -52,9 +52,10 @@ class TempSensor(Sensor):
     def get_real_sensor_value(self):
         sht_sensor = get_sht_sensor()
         t1 = sht_sensor.temperature
-        bmp_sensor = get_bmp_sensor()
-        t2 = bmp_sensor.temperature
-        return t1 + t2 / 2.0
+        return t1
+        # bmp_sensor = get_bmp_sensor()
+        # t2 = bmp_sensor.temperature
+        # return t1 + t2 / 2.0
 
 
 class HumiditySensor(Sensor):
@@ -172,6 +173,7 @@ def get_bmp_sensor():
     i2c = board.I2C()
     sensor = adafruit_bmp280.Adafruit_BMP280_I2C(i2c)
     sensor.sea_level_pressure = 1013.25
+    return sensor
 
 
 def get_lsm_sensors():

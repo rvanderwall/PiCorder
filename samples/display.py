@@ -60,6 +60,8 @@ draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
 disp.image(image)
 
 image = Image.open("blinka.jpg")
+image = Image.open("../assets/PicorderLogoSmall.png")
+image = Image.open("../assets/Edith.jpeg")
 
 # Scale the image to the smaller screen dimension
 image_ratio = image.width / image.height

@@ -12,6 +12,7 @@ try:
     from PIL import Image, ImageDraw
     import adafruit_rgb_display.ili9341 as ili9341
     DISPLAY_MODE = "TFT"
+    DISPLAY_MODE = "WINDOW"
     lg = Logger("Startup")
     lg.info("Entering TFT display mode")
 except:
@@ -84,17 +85,17 @@ class TFT_Display:
         draw.rectangle((0, 0, self.width, self.height), outline=0, fill=(0, 0, 0))
         self._surface.image(image)
 
-    def render_image(self, image, position):
+    def render_image(self, pil_image, position):
         # Scale the image to the smaller screen dimension
-        image_ratio = image.width / image.height
+        image_ratio = pil_image.width / pil_image.height
         screen_ratio = self.width / self.height
         if screen_ratio < image_ratio:
-            scaled_width = image.width * self.height // image.height
+            scaled_width = pil_image.width * self.height // pil_image.height
             scaled_height = self.height
         else:
             scaled_width = self.width
-            scaled_height = image.height * self.width // image.width
-        image = image.resize((scaled_width, scaled_height), Image.BICUBIC)
+            scaled_height = pil_image.height * self.width // pil_image.width
+        image = pil_image.resize((scaled_width, scaled_height), Image.BICUBIC)
 
         # Crop and center the image
         x = scaled_width // 2 - self.width // 2
@@ -188,7 +189,9 @@ class Display:
         for sensor_type in sensor_array:
             indicator = sensor_array[sensor_type]
             if isinstance(indicator, Indicator3D):
-                lbl = f"{indicator.label} {indicator.cur_val}"
+                v = indicator.cur_val
+                val_txt = f"[{v[0]:.2f}, {v[1]:.2f}, {v[2]:.2f}]"
+                lbl = f"{indicator.label}: {val_txt}"
                 self._lbl_vertical = True
             else:
                 assert isinstance(indicator, Indicator)
