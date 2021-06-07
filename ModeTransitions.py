@@ -15,8 +15,9 @@ class OperationMode(Enum):
     ENVIRONMENTAL = 0
     ENVIRONMENTAL2 = 1
     POSITIONAL = 2
-    AUDIO_VISUAL = 3
-    RECORDS = 4
+    POSITIONAL2 = 3
+    AUDIO_VISUAL = 4
+    RECORDS = 5
 
 @unique
 class DisplayMode(Enum):
@@ -41,6 +42,7 @@ display_mode_map = {
     OperationMode.ENVIRONMENTAL: [DisplayMode.SLIDER, DisplayMode.GRAPH],
     OperationMode.ENVIRONMENTAL2: [DisplayMode.TEXT, DisplayMode.GRAPH],
     OperationMode.POSITIONAL: [DisplayMode.TEXT, DisplayMode.THREE_D],
+    OperationMode.POSITIONAL2: [DisplayMode.TEXT, DisplayMode.GRAPH],
     OperationMode.AUDIO_VISUAL: [DisplayMode.TEXT],
     OperationMode.RECORDS: [DisplayMode.TEXT, DisplayMode.VIDEO]
 }
@@ -81,21 +83,10 @@ class ModeMapper:
             return Commands.NOOP
 
         if button == BUTTON_A:
-            # Bump Sensor Mode
-            cur_val = self.current_op_mode.value
-            if cur_val >= OperationMode.RECORDS.value:
-                self.current_op_mode = OperationMode.ENVIRONMENTAL
-            else:
-                self.current_op_mode = OperationMode(cur_val + 1)
-            self.enter_mode(self.current_op_mode)
+            self._bump_op_mode()
 
         elif button == BUTTON_B:
-            # Bump Display mode
-            disp_modes = display_mode_map[self.current_op_mode]
-            self.current_disp_mode_idx += 1
-            if self.current_disp_mode_idx >= len(disp_modes):
-                self.current_disp_mode_idx = 0
-            self._set_disp_mode()
+            self._bump_disp_mode()
 
         return Commands.NOOP
 
@@ -105,3 +96,25 @@ class ModeMapper:
     def _set_disp_mode(self):
         disp_modes = display_mode_map[self.current_op_mode]
         self.current_disp_mode = disp_modes[self.current_disp_mode_idx]
+
+    def _bump_op_mode(self):
+        # Move to the next operation mode
+        cur_val = self.current_op_mode
+        if cur_val == OperationMode.ENVIRONMENTAL:
+            self.current_op_mode = OperationMode.ENVIRONMENTAL2
+        elif cur_val == OperationMode.ENVIRONMENTAL2:
+            self.current_op_mode = OperationMode.POSITIONAL
+        elif cur_val == OperationMode.POSITIONAL:
+            self.current_op_mode = OperationMode.RECORDS
+        elif cur_val == OperationMode.RECORDS:
+            self.current_op_mode = OperationMode.ENVIRONMENTAL
+
+        self.enter_mode(self.current_op_mode)
+
+    def _bump_disp_mode(self):
+        # Move to the next display mode within this operation mode
+        disp_modes = display_mode_map[self.current_op_mode]
+        self.current_disp_mode_idx += 1
+        if self.current_disp_mode_idx >= len(disp_modes):
+            self.current_disp_mode_idx = 0
+        self._set_disp_mode()

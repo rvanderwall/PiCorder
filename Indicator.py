@@ -27,12 +27,15 @@ class Indicator:
         self.num_points = 290
 
         self.history = []
+        self._init_history(delta)
+
+    def _init_history(self, delta):
         mid = self._scale(delta / 2)
         for _ in range(self.num_points):
             self.history.append(mid)    # Fill history with mid-point data
 
     # Sets the slider X position
-    def set_pos(self, pos):
+    def set_x_pos(self, pos):
         self.x_position = pos
         return self
 
@@ -60,3 +63,24 @@ class Indicator:
     def _scale(self, val):
         t = self.graph_bottom - self.scale * (val - self.min)
         return t
+
+
+class Indicator3D(Indicator):
+    def __init__(self, name: str, sensor: Sensor):
+        super().__init__(name, sensor)
+
+    def _init_history(self, delta):
+        mid_val = (delta / 2, delta / 2, delta / 2)
+        mid = self._scale(mid_val)
+        for _ in range(self.num_points):
+            self.history.append(mid)    # Fill history with mid-point data
+
+    def _scale(self, val):
+        x, y, z = val
+        t_x = self.graph_bottom - self.scale * (x - self.min)
+        t_y = self.graph_bottom - self.scale * (y - self.min)
+        t_z = self.graph_bottom - self.scale * (z - self.min)
+        return (t_x, t_y, t_z)
+
+    def get_position(self):
+        pass
