@@ -2,6 +2,7 @@ from enum import Enum, unique
 from Inputs import BUTTON_A, BUTTON_B, BUTTON_C
 from Logger import Logger
 
+
 @unique
 class TricorderMode(Enum):
     LAPTOP = 0
@@ -18,6 +19,7 @@ class OperationMode(Enum):
     POSITIONAL2 = 3
     AUDIO_VISUAL = 4
     RECORDS = 5
+
 
 @unique
 class DisplayMode(Enum):

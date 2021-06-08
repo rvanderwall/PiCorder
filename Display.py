@@ -25,6 +25,7 @@ except:
 # General Display constants
 #
 RED = (255,   0,   0)
+RED_ORANGE = (255,   70,   0)
 GREEN = (0,   255,   0)
 BLUE = (0,     0, 255)
 ORANGE = (255, 140,   0)
@@ -150,13 +151,19 @@ class Display:
         if mode == DisplayMode.SPLASH:
             self._show_splash()
         elif isinstance(data_src, Record):
-            if mode == DisplayMode.VIDEO:
-                self._display.render_image(data_src.image, (0, 0))
-            elif mode == DisplayMode.TEXT:
-                self._update_string_text(data_src.text)
+            self._update_records_disp(mode, data_src)
         else:
             self._update_sensor_disp(mode, data_src)
+
         pygame.display.update()
+
+    def _update_records_disp(self, mode, data_src):
+        if mode == DisplayMode.VIDEO:
+            self._display.render_image(data_src.image, (0, 0))
+        elif mode == DisplayMode.TEXT:
+            self._update_record_text(data_src.text)
+        else:
+            self._update_to_unknown(mode)
 
     def _update_sensor_disp(self, mode, sensor_array):
         if mode == DisplayMode.SLIDER:
@@ -175,28 +182,37 @@ class Display:
             assert isinstance(indicator, Indicator)
             self._display.render_image(self._slider_img, indicator.get_position())
 
-    def _update_string_text(self, str_text):
+    def _update_record_text(self, str_text):
         font_size = 15
         disp_font = pygame.font.Font(self._font, font_size)
-        text = disp_font.render(str_text, True, SF_YELLOW)
-        x_lbl_pos, y_lbl_pos = (20, 20)
-        self._display.render_image(text, (x_lbl_pos, y_lbl_pos))
+        hdr = "Record Bank matches:"
+        label = disp_font.render(hdr, True, SF_YELLOW)
+        self._display.render_image(label, (20, 20))
+
+        font_size = 15
+        disp_font = pygame.font.Font(self._font, font_size)
+        text = disp_font.render(str_text, True, WHITE)
+        self._display.render_image(text, (20, 50))
 
     def _update_sensor_text(self, sensor_array):
         font_size = 15
         disp_font = pygame.font.Font(self._font, font_size)
         lbl_idx = 0
+        hdr = f"Sensor Bank [{len(sensor_array)} sensors]"
+        label = disp_font.render(hdr, True, SF_YELLOW)
+        self._display.render_image(label, (20, 20))
+
+        self._lbl_vertical = True
         for sensor_type in sensor_array:
             indicator = sensor_array[sensor_type]
             if isinstance(indicator, Indicator3D):
                 v = indicator.cur_val
                 val_txt = f"[{v[0]:.2f}, {v[1]:.2f}, {v[2]:.2f}]"
                 lbl = f"{indicator.label}: {val_txt}"
-                self._lbl_vertical = True
             else:
                 assert isinstance(indicator, Indicator)
-                self._lbl_vertical = False
-                lbl = f"{indicator.label} {indicator.cur_val:.2f}"
+                lbl = f"{indicator.label} {indicator.cur_val:.2f} | {indicator.info_txt}"
+
             label = disp_font.render(lbl, True, indicator.color)
             x_lbl_pos, y_lbl_pos = self._label_pos(lbl_idx)
             self._display.render_image(label, (x_lbl_pos, y_lbl_pos))
@@ -207,6 +223,8 @@ class Display:
         disp_font = pygame.font.Font(self._font, font_size)
         self._display.render_image(self._grid, (0, 0))
         lbl_idx = 0
+        offset = 0
+        self._lbl_vertical = False
         for sensor_type in sensor_array:
             indicator = sensor_array[sensor_type]
             assert isinstance(indicator, Indicator)
@@ -214,19 +232,23 @@ class Display:
 
             lbl = f"{indicator.label} {indicator.cur_val:.2f}"
             label = disp_font.render(lbl, True, indicator.color)
-            x_lbl_pos, y_lbl_pos = self._label_pos(lbl_idx)
+            x_lbl_pos, y_lbl_pos = self._label_pos(lbl_idx, offset)
             self._display.render_image(label, (x_lbl_pos, y_lbl_pos))
             lbl_idx += 1
+            offset += indicator.text_width
 
-    def _label_pos(self, lbl_num):
+    def _label_pos(self, lbl_num, offset=None):
         if self._lbl_vertical:
             # Stack Vertically
             x_lbl_pos = 20
-            y_lbl_pos = HEIGHT / 2 + 30
+            y_lbl_pos = HEIGHT / 2
             y_lbl_pos += lbl_num * 20
         else:
             # Stack Horizontally
-            x_lbl_pos = 20 + lbl_num * 65
+            if offset is None:
+                x_lbl_pos = 20 + lbl_num * 65
+            else:
+                x_lbl_pos = 20 + offset
             y_lbl_pos = 206
 
         return x_lbl_pos, y_lbl_pos

@@ -6,19 +6,18 @@ ILI9340:
 https://learn.adafruit.com/adafruit-2-8-and-3-2-color-tft-touchscreen-breakout-v2/python-wiring-and-setup
 
 DISP		PI
-VIN		3.3V (pin 17)
-GND		GND  (pin 25)
+---------------------------
+VIN		    3.3V (pin 17)
+GND		    GND  (pin 25)
 CLK/SPI		SCK/SPI (pin 23)
 MOSI		MOSI (pin 19)
 
 LCD CS		CEO/GPIO 8 (pin 24)	# Chip Select
-D/C		GPIO 25 (pin 22)	# Data/Command
+D/C		    GPIO 25 (pin 22)	# Data/Command
 RESET		GPIO 24 (pin 18)
 
-
-N/C		LCD CS
-N/C		MISO
-N/C		Backlight
+MISO        N/C
+Backlight   N/C
 
 
 https://learn.adafruit.com/micropython-hardware-ili9341-tft-and-featherwing/circuitpython

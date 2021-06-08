@@ -8,6 +8,10 @@ class Indicator:
         self.max = sensor.max
         self.reader = sensor.get_sensor_value
 
+        # Rendering attributes for text
+        self.text_width = 65
+        self.info_txt = sensor.info
+
         # Rendering attributes to determine Y position
         # The Y position will be the same for slider and graph
         self.cur_val = 0        # Actual reading
@@ -37,6 +41,11 @@ class Indicator:
     # Sets the slider X position
     def set_x_pos(self, pos):
         self.x_position = pos
+        return self
+
+    # Sets the slider X position
+    def set_text_width(self, width):
+        self.text_width = width
         return self
 
     # Sets the color for the graph
@@ -80,7 +89,7 @@ class Indicator3D(Indicator):
         t_x = self.graph_bottom - self.scale * (x - self.min)
         t_y = self.graph_bottom - self.scale * (y - self.min)
         t_z = self.graph_bottom - self.scale * (z - self.min)
-        return (t_x, t_y, t_z)
+        return t_x, t_y, t_z
 
     def get_position(self):
         pass
