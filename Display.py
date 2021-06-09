@@ -9,7 +9,7 @@ from Records import Record
 try:
     import digitalio
     import board
-    from PIL import Image, ImageDraw
+    from PIL import Image, ImageDraw, ImageFont
     import adafruit_rgb_display.ili9341 as ili9341
     DISPLAY_MODE = "TFT"
     DISPLAY_MODE = "WINDOW"
@@ -43,7 +43,7 @@ upper_left = (0, 0)
 lower_right = (WIDTH, HEIGHT)
 
 
-class TFT_Display:
+class TFT_Display:  # pylint: disable=camel-case
     def __init__(self):
         cs_pin = digitalio.DigitalInOut(board.CE0)
         dc_pin = digitalio.DigitalInOut(board.D25)
@@ -106,6 +106,21 @@ class TFT_Display:
         # Display image.
         self._surface.image(image)
 
+    def render_text(self, text):
+        image = Image.new("RGB", (self.width, self.height))
+
+        # Get drawing object to draw on image.
+        draw = ImageDraw.Draw(image)
+        FONTSIZE = 24
+        font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', FONTSIZE)
+        (font_width, font_height) = font.getsize(text)
+        draw.text((self.width // 2 - font_width // 2, self.height // 2 - font_height // 2),
+                  text, font=font, fill=(255, 255, 0))
+
+        self._surface.image(image)
+
+    def draw_lines(self, color, data):
+        pass
 
 class WindowDisplay:
     def __init__(self):
