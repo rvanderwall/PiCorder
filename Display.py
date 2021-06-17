@@ -8,147 +8,28 @@ from Records import Record
 
 try:
     import digitalio
-    import board
-    from PIL import Image, ImageDraw, ImageFont
-    import adafruit_rgb_display.ili9341 as ili9341
+    from Displays.TFTDisplay import TFT_Display, FPS, HEIGHT
     DISPLAY_MODE = "TFT"
-    DISPLAY_MODE = "WINDOW"
     lg = Logger("Startup")
     lg.info("Entering TFT display mode")
-except:
+except Exception as ex:
+    from Displays.PyGameDisplay import PyGameDisplay, FPS, HEIGHT
     DISPLAY_MODE = "WINDOW"
     lg = Logger("Startup")
     lg.info("Entering WINDOW display mode")
 
 
-#
-# General Display constants
-#
-RED = (255,   0,   0)
-RED_ORANGE = (255,   70,   0)
-GREEN = (0,   255,   0)
-BLUE = (0,     0, 255)
-ORANGE = (255, 140,   0)
-SF_YELLOW = (250, 225,  88)
-BLACK = (0,     0,   0)
-WHITE = (255, 255, 255)
-
-#
-# Tricorder display Constants
-#
-FPS = 30
-WIDTH = 320
-HEIGHT = 240
-upper_left = (0, 0)
-lower_right = (WIDTH, HEIGHT)
-
-
-class TFT_Display:  # pylint: disable=camel-case
-    def __init__(self):
-        cs_pin = digitalio.DigitalInOut(board.CE0)
-        dc_pin = digitalio.DigitalInOut(board.D25)
-        reset_pin = digitalio.DigitalInOut(board.D24)
-
-        # Config for display baudrate (default max is 24mhz):
-        BAUDRATE = 24000000
-
-        # Setup SPI bus using hardware SPI:
-        spi = board.SPI()
-
-        # Create the display:
-        self._surface = ili9341.ILI9341(
-            spi,
-            rotation=90,  # 2.2", 2.4", 2.8", 3.2" ILI9341
-            cs=cs_pin,
-            dc=dc_pin,
-            rst=reset_pin,
-            baudrate=BAUDRATE,
-        )
-        self.width = WIDTH
-        self.height = HEIGHT
-        self._manage_rotation()
-
-    def _manage_rotation(self):
-        if self._surface.rotation % 180 == 90:
-            self.height = self._surface.width  # we swap height/width to rotate it to landscape!
-            self.width = self._surface.height
-        else:
-            self.width = self._surface.width  # we swap height/width to rotate it to landscape!
-            self.height = self._surface.height
-
-    def clear(self):
-        image = Image.new("RGB", (self.width, self.height))
-
-        # Get drawing object to draw on image.
-        draw = ImageDraw.Draw(image)
-
-        # Draw a black filled box to clear the image.
-        draw.rectangle((0, 0, self.width, self.height), outline=0, fill=(0, 0, 0))
-        self._surface.image(image)
-
-    def render_image(self, pil_image, position):
-        # Scale the image to the smaller screen dimension
-        image_ratio = pil_image.width / pil_image.height
-        screen_ratio = self.width / self.height
-        if screen_ratio < image_ratio:
-            scaled_width = pil_image.width * self.height // pil_image.height
-            scaled_height = self.height
-        else:
-            scaled_width = self.width
-            scaled_height = pil_image.height * self.width // pil_image.width
-        image = pil_image.resize((scaled_width, scaled_height), Image.BICUBIC)
-
-        # Crop and center the image
-        x = scaled_width // 2 - self.width // 2
-        y = scaled_height // 2 - self.height // 2
-        image = image.crop((x, y, x + self.width, y + self.height))
-
-        # Display image.
-        self._surface.image(image)
-
-    def render_text(self, text):
-        image = Image.new("RGB", (self.width, self.height))
-
-        # Get drawing object to draw on image.
-        draw = ImageDraw.Draw(image)
-        FONTSIZE = 24
-        font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', FONTSIZE)
-        (font_width, font_height) = font.getsize(text)
-        draw.text((self.width // 2 - font_width // 2, self.height // 2 - font_height // 2),
-                  text, font=font, fill=(255, 255, 0))
-
-        self._surface.image(image)
-
-    def draw_lines(self, color, data):
-        pass
-
-class WindowDisplay:
-    def __init__(self):
-        self._surface = pygame.display.set_mode((WIDTH, HEIGHT))
-
-    def clear(self):
-        self._surface.fill(BLACK)
-
-    def render_image(self, image, position):
-        self._surface.blit(image, position)
-
-    def draw_lines(self, color, data):
-        width = 3
-        pygame.draw.lines(self._surface, color, False, data, width)
-
-
 class Display:
     def __init__(self, assets: Assets):
         if DISPLAY_MODE == "TFT":
-            self._display = TFT_Display()
+            assets.set_tft_mode()
+            self._display = TFT_Display(assets.font)
         else:
-            self._display = WindowDisplay()
+            self._display = PyGameDisplay(assets.font)
 
         self._frame_rate = pygame.time.Clock()
 
         # Load assets
-        self._font = assets.font
-
         self._scales = assets.scales
         self._grid = assets.grid
         self._slider_img = assets.slider_img
@@ -198,24 +79,14 @@ class Display:
             self._display.render_image(self._slider_img, indicator.get_position())
 
     def _update_record_text(self, str_text):
-        font_size = 15
-        disp_font = pygame.font.Font(self._font, font_size)
         hdr = "Record Bank matches:"
-        label = disp_font.render(hdr, True, SF_YELLOW)
-        self._display.render_image(label, (20, 20))
-
-        font_size = 15
-        disp_font = pygame.font.Font(self._font, font_size)
-        text = disp_font.render(str_text, True, WHITE)
-        self._display.render_image(text, (20, 50))
+        self._display.render_text(hdr, (20, 20))
+        self._display.render_text(str_text, (20, 50))
 
     def _update_sensor_text(self, sensor_array):
-        font_size = 15
-        disp_font = pygame.font.Font(self._font, font_size)
         lbl_idx = 0
         hdr = f"Sensor Bank [{len(sensor_array)} sensors]"
-        label = disp_font.render(hdr, True, SF_YELLOW)
-        self._display.render_image(label, (20, 20))
+        self._display.render_text(hdr, (20, 20))
 
         self._lbl_vertical = True
         for sensor_type in sensor_array:
@@ -228,14 +99,11 @@ class Display:
                 assert isinstance(indicator, Indicator)
                 lbl = f"{indicator.label} {indicator.cur_val:.2f} | {indicator.info_txt}"
 
-            label = disp_font.render(lbl, True, indicator.color)
             x_lbl_pos, y_lbl_pos = self._label_pos(lbl_idx)
-            self._display.render_image(label, (x_lbl_pos, y_lbl_pos))
+            self._display.render_text(lbl, (x_lbl_pos, y_lbl_pos))
             lbl_idx += 1
 
     def _update_graphs(self, sensor_array):
-        font_size = 15
-        disp_font = pygame.font.Font(self._font, font_size)
         self._display.render_image(self._grid, (0, 0))
         lbl_idx = 0
         offset = 0
@@ -243,12 +111,11 @@ class Display:
         for sensor_type in sensor_array:
             indicator = sensor_array[sensor_type]
             assert isinstance(indicator, Indicator)
-            self._display.draw_lines(indicator.color, indicator.get_history())
+            self._display.render_lines(indicator.color, indicator.get_history())
 
             lbl = f"{indicator.label} {indicator.cur_val:.2f}"
-            label = disp_font.render(lbl, True, indicator.color)
             x_lbl_pos, y_lbl_pos = self._label_pos(lbl_idx, offset)
-            self._display.render_image(label, (x_lbl_pos, y_lbl_pos))
+            self._display.render_text(lbl, (x_lbl_pos, y_lbl_pos))
             lbl_idx += 1
             offset += indicator.text_width
 
@@ -269,16 +136,9 @@ class Display:
         return x_lbl_pos, y_lbl_pos
 
     def _update_to_unknown(self, mode):
-        font_size = 15
-        disp_font = pygame.font.Font(self._font, font_size)
-        label = disp_font.render(f"Unknown mode: {mode}", True, SF_YELLOW)
-        self._display.render_image(label, (10, 180))
+        self._display.render_text(f"Unknown mode: {mode}", (10, 180))
 
     def _show_splash(self):
         self.clear()
         self._display.render_image(self._logo, (90, 0))
-
-        font_size = 33
-        disp_font = pygame.font.Font(self._font, font_size)
-        label = disp_font.render("StarFleet Tricorder TR-109", True, SF_YELLOW)
-        self._display.render_image(label, (10, 180))
+        self._display.render_text("StarFleet Tricorder TR-109", (10, 180), size=33)

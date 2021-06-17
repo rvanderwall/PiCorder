@@ -1,4 +1,5 @@
 import pygame
+from PIL import Image, ImageDraw, ImageFont
 
 
 class Assets:
@@ -10,4 +11,15 @@ class Assets:
         self.edith = pygame.image.load('./assets/Edith.jpeg')
         self.spock = pygame.image.load('./assets/spock.png')
         self.logo = pygame.image.load('assets/PicorderLogoSmall.png')
+        # self.logo = Image.open('assets/PicorderLogoSmall.png')
+
+    def set_tft_mode(self):
+        FONTSIZE = 24
+        self.font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', FONTSIZE)
+        self.scales = Image.open('./assets/background.png').convert('RGB')
+        self.grid = Image.open('./assets/backgraph.png').convert('RGB')
+        self.slider_img = Image.open('assets/slider.png').convert('RGB')
+        self.edith = Image.open('./assets/Edith.jpeg')
+        self.spock = Image.open('./assets/spock.png').convert('RGB')
+        self.logo = Image.open('assets/PicorderLogoSmall.png').convert('RGB')
         # self.logo = Image.open('assets/PicorderLogoSmall.png')

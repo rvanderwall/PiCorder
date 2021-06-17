@@ -4,7 +4,7 @@ from Sensor import TempSensor, Temp2Sensor, PressureSensor, HumiditySensor
 from Sensor import AltitudeSensor, AccelerationSensor, MagnetometerSensor, ProximitySensor
 from Sensor import ColorSensor, SoundSensor
 
-from Display import RED, RED_ORANGE, SF_YELLOW, WHITE, ORANGE
+from Displays.IDisplay import RED, RED_ORANGE, SF_YELLOW, WHITE, ORANGE
 from ModeTransitions import OperationMode
 
 
