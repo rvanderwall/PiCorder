@@ -71,7 +71,7 @@ class Indicator:
 
     def _scale(self, val):
         t = self.graph_bottom - self.scale * (val - self.min)
-        return t
+        return int(t)
 
 
 class Indicator3D(Indicator):

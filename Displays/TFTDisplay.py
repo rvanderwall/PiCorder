@@ -32,11 +32,13 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
 
         # Setup SPI bus using hardware SPI:
         spi = board.SPI()
+        rotation = 90 # Normal
+        rotation = 270 # Rotated for tricorder
 
         # Create the display:
         self._surface = ili9341.ILI9341(
             spi,
-            rotation=90,  # 2.2", 2.4", 2.8", 3.2" ILI9341
+            rotation=rotation,  # 2.2", 2.4", 2.8", 3.2" ILI9341
             cs=cs_pin,
             dc=dc_pin,
             rst=reset_pin,
@@ -49,10 +51,12 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
 
     def _manage_rotation(self):
         if self._surface.rotation % 180 == 90:
-            self.height = self._surface.width  # we swap height/width to rotate it to landscape!
+            # we swap height/width to rotate it to landscape!
+            self.height = self._surface.width
             self.width = self._surface.height
         else:
-            self.width = self._surface.width  # we swap height/width to rotate it to landscape!
+            # we swap height/width to rotate it to landscape!
+            self.width = self._surface.width
             self.height = self._surface.height
 
     def clear(self):
@@ -70,13 +74,18 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         self._surface.image(image)
 
     def render_image(self, pil_image, position):
+        print(f"disp = ({self.width},{self.height})")
+        print(f"Size = ({pil_image.width},{pil_image.height})")
         if pil_image.width > self.width or pil_image.height > self.height:
             pil_image = self._scale_image(pil_image)
 
         # Display image.
-        self._surface.image(pil_image, x=position[0], y=position[1])
+        print(f"img: disp = ({self.width},{self.height})")
+        print(f"img: img = ({pil_image.width},{pil_image.height})")
+        print(f"img: pos = ({position[0]},{position[1]})")
+        self._surface.image(pil_image, x=position[1], y=position[0])
 
-    def draw_text(self, text, position):
+    def render_text(self, text, position, size):
         (font_width, font_height) = self._font.getsize(text)
         image = Image.new("RGB", (font_width, font_height))
         # Get drawing object to draw on image.
@@ -84,13 +93,18 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         draw.text((0, 0), text, font=self._font, fill=SF_YELLOW)
 
         (font_width, font_height) = self._font.getsize(text)
-        draw.text((self.width // 2 - font_width // 2, self.height // 2 - font_height // 2),
-                  text, font=self._font, fill=SF_YELLOW)
+        c_x = self.width // 2 - font_width // 2
+        c_y = self.height // 2 - font_height // 2
+        print(f"txt: disp = ({self.width},{self.height})")
+        print(f"txt: center = ({c_x},{c_y})")
+        print(f"txt: size = ({font_width},{font_height})")
+        draw.text((0, 0), text, font=self._font, fill=SF_YELLOW)
 
+        #self._surface.image(image, x=position[0], y=position[1])
         self._surface.image(image, x=position[0], y=position[1])
 
 
-    def draw_lines(self, color, data):
+    def render_lines(self, color, data):
         pass
 
     def _scale_image(self, pil_image):

@@ -51,7 +51,7 @@ class Display:
         else:
             self._update_sensor_disp(mode, data_src)
 
-        pygame.display.update()
+        # pygame.display.update()
 
     def _update_records_disp(self, mode, data_src):
         if mode == DisplayMode.VIDEO:
@@ -140,5 +140,10 @@ class Display:
 
     def _show_splash(self):
         self.clear()
-        self._display.render_image(self._logo, (90, 0))
-        self._display.render_text("StarFleet Tricorder TR-109", (10, 180), size=33)
+        logo_position = (90, 0)  #PyGame
+        logo_position = (96, 50) #TFT
+        self._display.render_image(self._logo, logo_position)
+        txt_position = (10, 180)
+        txt_position = (0, 0)
+        self._display.render_text("StarFleet Tricorder TR-109", txt_position, size=33)
+
