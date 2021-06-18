@@ -30,10 +30,10 @@ class Display:
         self._frame_rate = pygame.time.Clock()
 
         # Load assets
+        self._assets = assets
         self._scales = assets.scales
         self._grid = assets.grid
         self._slider_img = assets.slider_img
-        self._logo = assets.logo
         self._lbl_vertical = False    # If labels are horizontal or vertical
 
     def clear(self):
@@ -51,7 +51,7 @@ class Display:
         else:
             self._update_sensor_disp(mode, data_src)
 
-        # pygame.display.update()
+        self._display.update()
 
     def _update_records_disp(self, mode, data_src):
         if mode == DisplayMode.VIDEO:
@@ -140,10 +140,6 @@ class Display:
 
     def _show_splash(self):
         self.clear()
-        logo_position = (90, 0)  #PyGame
-        logo_position = (96, 50) #TFT
-        self._display.render_image(self._logo, logo_position)
-        txt_position = (10, 180)
-        txt_position = (0, 0)
-        self._display.render_text("StarFleet Tricorder TR-109", txt_position, size=33)
+        self._display.render_image(self._assets.logo, self._assets.logo_position)
+        self._display.render_text(self._assets.logo_txt, self._assets.txt_position, size=33)
 

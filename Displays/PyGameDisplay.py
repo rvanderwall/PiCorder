@@ -33,4 +33,5 @@ class PyGameDisplay(IDisplay):
         label = disp_font.render(text, True, SF_YELLOW)
         self.render_image(label, position)
 
-
+    def update(self):
+        pygame.display.update()

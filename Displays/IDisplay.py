@@ -27,9 +27,13 @@ class IDisplay(ABC):
         pass
 
     @abstractmethod
-    def render_text(self, text, position):
+    def render_text(self, text, position, size):
         pass
 
     @abstractmethod
     def render_lines(self, color, data):
+        pass
+
+    @abstractmethod
+    def update(self):
         pass

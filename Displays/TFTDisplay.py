@@ -44,20 +44,15 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
             rst=reset_pin,
             baudrate=BAUDRATE,
         )
-        self.width = WIDTH
-        self.height = HEIGHT
         self._font = font
-        self._manage_rotation()
+        self.width, self.height = self._rotate(self._surface.width, self._surface.height)
 
-    def _manage_rotation(self):
+    def _rotate(self, x, y):
         if self._surface.rotation % 180 == 90:
             # we swap height/width to rotate it to landscape!
-            self.height = self._surface.width
-            self.width = self._surface.height
+            return y, x
         else:
-            # we swap height/width to rotate it to landscape!
-            self.width = self._surface.width
-            self.height = self._surface.height
+            return x, y
 
     def clear(self):
         #  Clear display
@@ -74,16 +69,15 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         self._surface.image(image)
 
     def render_image(self, pil_image, position):
-        print(f"disp = ({self.width},{self.height})")
-        print(f"Size = ({pil_image.width},{pil_image.height})")
         if pil_image.width > self.width or pil_image.height > self.height:
             pil_image = self._scale_image(pil_image)
 
         # Display image.
+        x, y = self._rotate(position[0], position[1])
         print(f"img: disp = ({self.width},{self.height})")
         print(f"img: img = ({pil_image.width},{pil_image.height})")
-        print(f"img: pos = ({position[0]},{position[1]})")
-        self._surface.image(pil_image, x=position[1], y=position[0])
+        print(f"img: pos = ({x},{y})")
+        self._surface.image(pil_image, x=x, y=y)
 
     def render_text(self, text, position, size):
         (font_width, font_height) = self._font.getsize(text)
@@ -92,19 +86,16 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         draw = ImageDraw.Draw(image)
         draw.text((0, 0), text, font=self._font, fill=SF_YELLOW)
 
-        (font_width, font_height) = self._font.getsize(text)
-        c_x = self.width // 2 - font_width // 2
-        c_y = self.height // 2 - font_height // 2
+        x, y = self._rotate(position[0], position[1])
         print(f"txt: disp = ({self.width},{self.height})")
-        print(f"txt: center = ({c_x},{c_y})")
-        print(f"txt: size = ({font_width},{font_height})")
-        draw.text((0, 0), text, font=self._font, fill=SF_YELLOW)
-
-        #self._surface.image(image, x=position[0], y=position[1])
-        self._surface.image(image, x=position[0], y=position[1])
-
+        print(f"txt: txt = ({font_width},{font_height})")
+        print(f"txt: pos = ({x},{y})")
+        self._surface.image(image, x=x, y=y)
 
     def render_lines(self, color, data):
+        pass
+
+    def update(self):
         pass
 
     def _scale_image(self, pil_image):
