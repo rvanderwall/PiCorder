@@ -1,10 +1,11 @@
 import pygame
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageFont
 
 
 class Assets:
     def __init__(self):
         self.font = "assets/babs.otf"
+        self.large_font = None
         self.scales = pygame.image.load('./assets/background.png')
         self.grid = pygame.image.load('./assets/backgraph.png')
         self.slider_img = pygame.image.load('assets/slider.png')
@@ -15,10 +16,10 @@ class Assets:
         self.logo_position = (90, 0)  # PyGame
         self.txt_position = (10, 180)
 
-    # self.logo = Image.open('assets/PicorderLogoSmall.png')
-
     def set_tft_mode(self):
         FONTSIZE = 22
+        self.large_font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', FONTSIZE)
+        FONTSIZE = 18
         self.font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', FONTSIZE)
         self.scales = Image.open('./assets/background.png').convert('RGB')
         self.grid = Image.open('./assets/backgraph.png').convert('RGB')

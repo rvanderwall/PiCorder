@@ -8,26 +8,29 @@ from Records import Record
 
 try:
     import digitalio
-    from Displays.TFTDisplay import TFT_Display, FPS, HEIGHT
+    from Displays.TFTDisplay import TFT_Display, FPS
     DISPLAY_MODE = "TFT"
     lg = Logger("Startup")
     lg.info("Entering TFT display mode")
 except Exception as ex:
-    from Displays.PyGameDisplay import PyGameDisplay, FPS, HEIGHT
+    from Displays.PyGameDisplay import PyGameDisplay, FPS
     DISPLAY_MODE = "WINDOW"
     lg = Logger("Startup")
     lg.info("Entering WINDOW display mode")
 
 
 class Display:
-    def __init__(self, assets: Assets):
+    def __init__(self, logger: Logger, assets: Assets):
+        self._lgr = logger
         if DISPLAY_MODE == "TFT":
             assets.set_tft_mode()
-            self._display = TFT_Display(assets.font)
+            self._display = TFT_Display(logger, assets)
         else:
-            self._display = PyGameDisplay(assets.font)
+            self._display = PyGameDisplay(logger, assets)
 
         self._frame_rate = pygame.time.Clock()
+        self._prev_mode = None
+        self._prev_data = None
 
         # Load assets
         self._assets = assets
@@ -43,7 +46,11 @@ class Display:
         self._frame_rate.tick(FPS)
 
     def update(self, mode, data_src):
-        self.clear()
+        self._lgr.info("Display: Update")
+        if self._prev_mode != mode or self._prev_data != data_src:
+            self.clear()
+            self._prev_mode = mode
+            self._prev_data = data_src
         if mode == DisplayMode.SPLASH:
             self._show_splash()
         elif isinstance(data_src, Record):
@@ -80,13 +87,13 @@ class Display:
 
     def _update_record_text(self, str_text):
         hdr = "Record Bank matches:"
-        self._display.render_text(hdr, (20, 20))
-        self._display.render_text(str_text, (20, 50))
+        self._display.render_static_text(hdr, (20, 20))
+        self._display.render_static_text(str_text, (20, 50))
 
     def _update_sensor_text(self, sensor_array):
         lbl_idx = 0
         hdr = f"Sensor Bank [{len(sensor_array)} sensors]"
-        self._display.render_text(hdr, (20, 20))
+        self._display.render_static_text(hdr, (20, 20))
 
         self._lbl_vertical = True
         for sensor_type in sensor_array:
@@ -99,13 +106,15 @@ class Display:
                 assert isinstance(indicator, Indicator)
                 lbl = f"{indicator.label} {indicator.cur_val:.2f} | {indicator.info_txt}"
 
-            x_lbl_pos, y_lbl_pos = self._label_pos(lbl_idx)
-            self._display.render_text(lbl, (x_lbl_pos, y_lbl_pos))
+            row_height = 20
+            position = self._label_pos(lbl_idx, row_height)
+            self._display.render_dynamic_text(lbl, position)
             lbl_idx += 1
 
     def _update_graphs(self, sensor_array):
         self._display.render_image(self._grid, (0, 0))
         lbl_idx = 0
+        row_height = 20
         offset = 0
         self._lbl_vertical = False
         for sensor_type in sensor_array:
@@ -114,17 +123,17 @@ class Display:
             self._display.render_lines(indicator.color, indicator.get_history())
 
             lbl = f"{indicator.label} {indicator.cur_val:.2f}"
-            x_lbl_pos, y_lbl_pos = self._label_pos(lbl_idx, offset)
-            self._display.render_text(lbl, (x_lbl_pos, y_lbl_pos))
+            x_lbl_pos, y_lbl_pos = self._label_pos(lbl_idx, row_height, offset)
+            self._display.render_dynamic_text(lbl, (x_lbl_pos, y_lbl_pos), )
             lbl_idx += 1
             offset += indicator.text_width
 
-    def _label_pos(self, lbl_num, offset=None):
+    def _label_pos(self, lbl_num, row_height, offset=None):
         if self._lbl_vertical:
             # Stack Vertically
             x_lbl_pos = 20
-            y_lbl_pos = HEIGHT / 2
-            y_lbl_pos += lbl_num * 20
+            y_lbl_pos = self._display.height // 2
+            y_lbl_pos += lbl_num * row_height
         else:
             # Stack Horizontally
             if offset is None:
@@ -136,10 +145,10 @@ class Display:
         return x_lbl_pos, y_lbl_pos
 
     def _update_to_unknown(self, mode):
-        self._display.render_text(f"Unknown mode: {mode}", (10, 180))
+        self._display.render_static_text(f"Unknown mode: {mode}", (10, 180))
 
     def _show_splash(self):
         self.clear()
         self._display.render_image(self._assets.logo, self._assets.logo_position)
-        self._display.render_text(self._assets.logo_txt, self._assets.txt_position, size=33)
+        self._display.render_static_text(self._assets.logo_txt, self._assets.txt_position, font_size=33)
 

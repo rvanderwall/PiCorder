@@ -1,25 +1,26 @@
 import pygame
+from Assets import Assets
 from Displays.IDisplay import IDisplay, BLACK, SF_YELLOW
-
+from Logger import Logger
 
 #
 # Tricorder display Constants
 #
-FPS = 30
-WIDTH = 320
-HEIGHT = 240
-upper_left = (0, 0)
-lower_right = (WIDTH, HEIGHT)
+FPS = 1
 
 
 class PyGameDisplay(IDisplay):
-    def __init__(self, font):
-        super().__init__(font)
-        self._surface = pygame.display.set_mode((WIDTH, HEIGHT))
-        self._font = font
+    def __init__(self, logger: Logger, assets: Assets):
+        super().__init__(logger, assets)
+        self.width = 320
+        self.height = 240
+        self._surface = pygame.display.set_mode((self.width, self.height))
+        self._upper_left = (0, 0)
+        self._static_text = []
 
     def clear(self):
         self._surface.fill(BLACK)
+        self._static_text = []
 
     def render_background(self, image):
         self._surface.blit(image, (0, 0))
@@ -31,10 +32,28 @@ class PyGameDisplay(IDisplay):
         width = 3
         pygame.draw.lines(self._surface, color, False, data, width)
 
-    def render_text(self, text, position, size=15):
-        disp_font = pygame.font.Font(self._font, size)
+    def render_dynamic_text(self, text, position, font_size=15):
+        self._lgr.info(f"Render dynamic text {text}, {position}")
+        row_height = 20
+        row_size = (self.width - position[0], row_height)
+        self._clear_area(position, row_size)
+        disp_font = pygame.font.Font(self._font, font_size)
+        label = disp_font.render(text, True, SF_YELLOW)
+        self.render_image(label, position)
+
+    def render_static_text(self, text, position, font_size=15):
+        self._lgr.info(f"Render static text {text}, {position}")
+        if text in self._static_text:
+            return
+        self._static_text.append(text)
+        disp_font = pygame.font.Font(self._font, font_size)
         label = disp_font.render(text, True, SF_YELLOW)
         self.render_image(label, position)
 
     def update(self):
         pygame.display.update()
+
+    def _clear_area(self, position, size):
+        self._lgr.info(f"Clear area {position}, {size}")
+        rect = pygame.Rect(position[0], position[1], size[0], size[1])
+        pygame.draw.rect(self._surface, BLACK, rect)

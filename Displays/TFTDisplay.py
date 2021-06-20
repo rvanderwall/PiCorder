@@ -1,4 +1,5 @@
 from Logger import Logger
+from Assets import Assets
 from Displays.IDisplay import IDisplay, SF_YELLOW, BLACK
 try:
     import digitalio
@@ -13,16 +14,12 @@ except Exception as ex:
 #
 # Tricorder display Constants
 #
-FPS = 30
-WIDTH = 320
-HEIGHT = 240
-upper_left = (0, 0)
-lower_right = (WIDTH, HEIGHT)
+FPS = 1
 
 
 class TFT_Display(IDisplay):  # pylint: disable=camel-case
-    def __init__(self, font):
-        super().__init__(font)
+    def __init__(self, logger: Logger, assets: Assets):
+        super().__init__(logger, assets)
         cs_pin = digitalio.DigitalInOut(board.CE0)
         dc_pin = digitalio.DigitalInOut(board.D25)
         reset_pin = digitalio.DigitalInOut(board.D24)
@@ -32,8 +29,8 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
 
         # Setup SPI bus using hardware SPI:
         spi = board.SPI()
-        rotation = 90 # Normal
-        rotation = 270 # Rotated for tricorder
+        # rotation = 90  # Normal
+        rotation = 270   # Rotated for tricorder
 
         # Create the display:
         self._surface = ili9341.ILI9341(
@@ -44,22 +41,20 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
             rst=reset_pin,
             baudrate=BAUDRATE,
         )
-        self._font = font
-        self.width, self.height = self._rotate(self._surface.width, self._surface.height)
-        self.current_background = None
 
-    def _rotate(self, x, y):
-        if self._surface.rotation % 180 == 90:
-            # we swap height/width to rotate it to landscape!
-            return y, x
-        else:
-            return x, y
+        self.width, self.height = self._rotate(self._surface.width, self._surface.height)
+
+        self.large_font = assets.large_font
+        self.current_background = None
+        self._static_text = []
 
     def clear(self):
-        #  Clear display
+        self._lgr.info("TFT: Clearing display with fill")
         self._surface.fill(0)
+        self._static_text = []
 
     def clear2(self):
+        self._lgr.info("TFT: Clearing display with draw")
         image = Image.new("RGB", (self.width, self.height))
 
         # Get drawing object to draw on image.
@@ -68,35 +63,51 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         # Draw a black filled box to clear the image.
         draw.rectangle((0, 0, self.width, self.height), outline=0, fill=BLACK)
         self._surface.image(image)
+        self._static_text = []
 
     def render_background(self, image):
+        self._lgr.info("TFT: Add Background")
         if image == self.current_background:
             return
-        self.render_image(image, (0,0))
+        self.render_image(image, (0, 0))
         self.current_background = image
 
     def render_image(self, pil_image, position):
+        self._lgr.info("TFT: Add image")
         if pil_image.width > self.width or pil_image.height > self.height:
             pil_image = self._scale_image(pil_image)
 
         # Display image.
         x, y = self._rotate(position[0], position[1])
-        print(f"img: disp = ({self.width},{self.height})")
-        print(f"img: img = ({pil_image.width},{pil_image.height})")
-        print(f"img: pos = ({x},{y})")
+        self._lgr.info(f"TFT: img: disp = ({self.width},{self.height})")
+        self._lgr.info(f"TFT: img: img = ({pil_image.width},{pil_image.height})")
+        self._lgr.info(f"TFT: img: pos = ({x},{y})")
         self._surface.image(pil_image, x=x, y=y)
 
-    def render_text(self, text, position, size):
-        (font_width, font_height) = self._font.getsize(text)
+    def render_static_text(self, text, position, size=18):
+        self._lgr.info("TFT: Render static text")
+        if text in self._static_text:
+            return
+        self._static_text.append(text)
+        self.render_dynamic_text(text, position, size)
+
+    def render_dynamic_text(self, text, position, size=18):
+        self._lgr.info("TFT: Render dynamic text")
+        if size > 18:
+            font = self.large_font
+        else:
+            font = self._font
+
+        (font_width, font_height) = font.getsize(text)
         image = Image.new("RGB", (font_width, font_height))
         # Get drawing object to draw on image.
         draw = ImageDraw.Draw(image)
-        draw.text((0, 0), text, font=self._font, fill=SF_YELLOW)
+        draw.text((0, 0), text, font=font, fill=SF_YELLOW)
 
         x, y = self._rotate(position[0], position[1])
-        print(f"txt: disp = ({self.width},{self.height})")
-        print(f"txt: txt = ({font_width},{font_height})")
-        print(f"txt: pos = ({x},{y})")
+        self._lgr.info(f"TFT: txt: disp = ({self.width},{self.height})")
+        self._lgr.info(f"TFT: txt: txt = ({font_width},{font_height})")
+        self._lgr.info(f"TFT: txt: pos = ({x},{y})")
         self._surface.image(image, x=x, y=y)
 
     def render_lines(self, color, data):
@@ -104,6 +115,13 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
 
     def update(self):
         pass
+
+    def _rotate(self, x, y):
+        if self._surface.rotation % 180 == 90:
+            # we swap height/width to rotate it to landscape!
+            return y, x
+        else:
+            return x, y
 
     def _scale_image(self, pil_image):
         image_ratio = pil_image.width / pil_image.height
@@ -123,3 +141,6 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         y = image.height // 2 - self.height // 2
         image = image.crop((x, y, x + self.width, y + self.height))
         return image
+
+    def _clear_area(self, position, size):
+        pass

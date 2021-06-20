@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-
+from Assets import Assets
+from Logger import Logger
 
 #
 # General Display constants
@@ -15,8 +16,11 @@ WHITE = (255, 255, 255)
 
 
 class IDisplay(ABC):
-    def __init__(self, font):
-        pass
+    def __init__(self, logger: Logger, assets: Assets):
+        self.width = 0
+        self.height = 0
+        self._lgr = logger
+        self._font = assets.font
 
     @abstractmethod
     def clear(self):
@@ -31,7 +35,11 @@ class IDisplay(ABC):
         pass
 
     @abstractmethod
-    def render_text(self, text, position, size):
+    def render_dynamic_text(self, text, position, font_size):
+        pass
+
+    @abstractmethod
+    def render_static_text(self, text, position, font_size):
         pass
 
     @abstractmethod

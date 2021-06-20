@@ -14,7 +14,7 @@ from SensorArray import SensorArray
 def build_tricorder():
     logger = Logger("Tricorder")
     assets = Assets()
-    display = Display(assets)
+    display = Display(logger, assets)
     sensor_array = SensorArray()
     mode_mapper = ModeMapper(logger)
     tricorder = Tricorder(logger, display, sensor_array, mode_mapper)
