@@ -72,7 +72,7 @@ class Display:
             self._update_to_unknown(mode)
 
     def _update_sliders(self, sensor_array):
-        self._display.render_image(self._scales, (0, 0))
+        self._display.render_background(self._scales)
         for sensor_type in sensor_array:
             indicator = sensor_array[sensor_type]
             assert isinstance(indicator, Indicator)

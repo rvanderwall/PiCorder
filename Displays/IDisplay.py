@@ -23,6 +23,10 @@ class IDisplay(ABC):
         pass
 
     @abstractmethod
+    def render_background(self, image):
+        pass
+
+    @abstractmethod
     def render_image(self, image, position):
         pass
 

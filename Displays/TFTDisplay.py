@@ -46,6 +46,7 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         )
         self._font = font
         self.width, self.height = self._rotate(self._surface.width, self._surface.height)
+        self.current_background = None
 
     def _rotate(self, x, y):
         if self._surface.rotation % 180 == 90:
@@ -67,6 +68,12 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         # Draw a black filled box to clear the image.
         draw.rectangle((0, 0, self.width, self.height), outline=0, fill=BLACK)
         self._surface.image(image)
+
+    def render_background(self, image):
+        if image == self.current_background:
+            return
+        self.render_image(image, (0,0))
+        self.current_background = image
 
     def render_image(self, pil_image, position):
         if pil_image.width > self.width or pil_image.height > self.height:

@@ -21,6 +21,9 @@ class PyGameDisplay(IDisplay):
     def clear(self):
         self._surface.fill(BLACK)
 
+    def render_background(self, image):
+        self._surface.blit(image, (0, 0))
+
     def render_image(self, image, position):
         self._surface.blit(image, position)
 
