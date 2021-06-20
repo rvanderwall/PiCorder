@@ -8,6 +8,7 @@ from Tricorder import build_tricorder
 
 def init():
     pygame.init()
+    pygame.mixer.quit()
     pygame.display.set_caption("PyGame Demo")
     tricorder = build_tricorder()
     return tricorder
@@ -18,7 +19,9 @@ def game_loop(tricorder):
         tricorder.update_sensors()
         tricorder.update_display()
 
-        for event in pygame.event.get():
+        event_list = pygame.event.get()
+        print(f"Event list = {event_list}")
+        for event in event_list:
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()

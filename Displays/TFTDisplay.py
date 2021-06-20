@@ -1,3 +1,4 @@
+import pygame
 from Logger import Logger
 from Assets import Assets
 from Displays.IDisplay import IDisplay, SF_YELLOW, BLACK
@@ -14,7 +15,7 @@ except Exception as ex:
 #
 # Tricorder display Constants
 #
-FPS = 1
+FPS = 30
 
 
 class TFT_Display(IDisplay):  # pylint: disable=camel-case
@@ -84,16 +85,16 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         self._lgr.info(f"TFT: img: pos = ({x},{y})")
         self._surface.image(pil_image, x=x, y=y)
 
-    def render_static_text(self, text, position, size=18):
+    def render_static_text(self, text, position, font_size=18):
         self._lgr.info("TFT: Render static text")
         if text in self._static_text:
             return
         self._static_text.append(text)
-        self.render_dynamic_text(text, position, size)
+        self.render_dynamic_text(text, position, font_size)
 
-    def render_dynamic_text(self, text, position, size=18):
+    def render_dynamic_text(self, text, position, font_size=18):
         self._lgr.info("TFT: Render dynamic text")
-        if size > 18:
+        if font_size > 18:
             font = self.large_font
         else:
             font = self._font
@@ -114,6 +115,9 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         pass
 
     def update(self):
+        print(f"mixer: {pygame.mixer.get_init()}")
+        pygame.display.update()
+        # pygame.event.pump()
         pass
 
     def _rotate(self, x, y):
