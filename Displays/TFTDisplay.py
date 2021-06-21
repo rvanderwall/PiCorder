@@ -1,4 +1,3 @@
-import pygame
 from Logger import Logger
 from Assets import Assets
 from Displays.IDisplay import IDisplay, SF_YELLOW, BLACK
@@ -115,9 +114,6 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         pass
 
     def update(self):
-        print(f"mixer: {pygame.mixer.get_init()}")
-        pygame.display.update()
-        # pygame.event.pump()
         pass
 
     def _rotate(self, x, y):

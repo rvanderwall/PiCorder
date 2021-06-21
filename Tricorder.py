@@ -2,7 +2,7 @@ from time import sleep
 import pygame
 
 from Assets import Assets
-from Display import Display
+from Display import Display, DISPLAY_MODE
 from Inputs import Input
 from Logger import Logger
 from ModeTransitions import ModeMapper, Commands
@@ -26,15 +26,21 @@ def build_tricorder():
 class Tricorder:
     def __init__(self, logger: Logger, display: Display, sensor_array: SensorArray, mode_mapper: ModeMapper):
         self.logger = logger
+        self.mode = TricorderMode.LAPTOP
+
         self._display = display
         self._sensor_array = sensor_array
         self._mode_mapper = mode_mapper
-        self._mode = TricorderMode.LAPTOP
 
         self._inputs = None
         self._outputs = None
         self._records = None
         self._restart()
+        self._set_mode()
+
+    def _set_mode(self):
+        if DISPLAY_MODE == "TFT":
+            self.mode = TricorderMode.RASP_PI_SENSORS
 
     def update_sensors(self):
         sensor_bank = self._sensor_array.get_sensor_bank(self._mode_mapper.current_op_mode)
@@ -76,6 +82,8 @@ class Tricorder:
             self.logger.error("Cannot record yet")
         elif command == Commands.NEXT:
             self._records.next_record()
+        elif command == Commands.TERMINATE:
+            pass
         else:
             pass
 

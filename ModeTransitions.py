@@ -1,5 +1,5 @@
 from enum import Enum, unique
-from Inputs import BUTTON_A, BUTTON_B, BUTTON_C
+from Inputs import BUTTON_A, BUTTON_B, BUTTON_C, BUTTON_QUIT
 from Logger import Logger
 
 
@@ -19,6 +19,7 @@ class OperationMode(Enum):
     POSITIONAL2 = 3
     AUDIO_VISUAL = 4
     RECORDS = 5
+    EXIT = 6
 
 
 @unique
@@ -37,6 +38,7 @@ class Commands(Enum):
     RESET = 1
     RECORD = 2
     NEXT = 3
+    TERMINATE = 4
 
 
 display_mode_map = {
@@ -73,15 +75,11 @@ class ModeMapper:
         self._set_disp_mode()
 
     def switch_mode(self, button) -> Commands:
-        if button is None:
-            return Commands.NOOP
-
-        if button == BUTTON_C:
-            command = command_map[self.current_op_mode]
-            return command
-
         # controller needs to take us out of init
         if self.current_op_mode == OperationMode.INIT:
+            return Commands.NOOP
+
+        if button is None:
             return Commands.NOOP
 
         if button == BUTTON_A:
@@ -89,6 +87,13 @@ class ModeMapper:
 
         elif button == BUTTON_B:
             self._bump_disp_mode()
+
+        elif button == BUTTON_C:
+            command = command_map[self.current_op_mode]
+            return command
+
+        elif button == BUTTON_QUIT:
+            return Commands.TERMINATE
 
         return Commands.NOOP
 
