@@ -3,7 +3,7 @@ import sys
 import pygame
 from pygame.locals import *
 
-from Inputs import KBInput, BUTTON_QUIT
+from Inputs import Input, KBInput, BUTTON_QUIT
 from Tricorder import build_tricorder, TricorderMode
 
 
@@ -16,37 +16,36 @@ def init():
 
 
 def pg_game_loop(tricorder):
+    input = Input(tricorder.logger)
     while True:
         tricorder.update_sensors()
         tricorder.update_display()
 
         event_list = pygame.event.get()
-        print(f"Event list = {event_list}")
         for event in event_list:
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
 
-            tricorder.process_inputs(event)
+            key = input.get_button_press(event)
+            tricorder.process_button_press(key)
 
         tricorder.refresh()
 
 
 def game_loop(tricorder):
     kb = KBInput(tricorder.logger)
-
     while True:
         tricorder.update_sensors()
         tricorder.update_display()
 
-        btn_press = kb.current_button()
-        print(f"Event = {btn_press}")
-        tricorder.process_inputs(btn_press)
-        tricorder.refresh()
-
+        btn_press = kb.get_button_press()
         if btn_press == BUTTON_QUIT:
             pygame.quit()
             sys.exit()
+
+        tricorder.process_button_press(btn_press)
+        tricorder.refresh()
 
 
 if __name__ == '__main__':

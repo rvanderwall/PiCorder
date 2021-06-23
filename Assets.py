@@ -19,7 +19,7 @@ class Assets:
     def set_tft_mode(self):
         FONTSIZE = 22
         self.large_font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', FONTSIZE)
-        FONTSIZE = 18
+        FONTSIZE = 15
         self.font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', FONTSIZE)
         self.scales = Image.open('./assets/background.png').convert('RGB')
         self.grid = Image.open('./assets/backgraph.png').convert('RGB')

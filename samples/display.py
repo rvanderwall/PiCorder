@@ -44,15 +44,16 @@ def setup():
     log("Done setting up SPI")
 
     # Create the display:
+    rotation = 270
     disp = ili9341.ILI9341(
         spi,
-        rotation=270,  # 2.2", 2.4", 2.8", 3.2" ILI9341
+        rotation=rotation,  # 2.2", 2.4", 2.8", 3.2" ILI9341
         cs=cs_pin,
         dc=dc_pin,
         rst=reset_pin,
         baudrate=BAUDRATE,
     )
-    log("Done getting display")
+    log(f"Done getting display: ({disp.width}, {disp.height})")
     return disp
 
 
@@ -92,6 +93,12 @@ def rescale(image):
 
     return image.resize((scaled_width, scaled_height), Image.BICUBIC)
 
+def show_box(disp):
+    image = Image.new('RGB', (10, 10))
+    draw = ImageDraw.Draw(image)
+    draw.rectangle((0, 0, 10, 10), fill=(255, 0, 0))
+    disp.image(image, x=10, y=150)
+    log("Done painting box")
 
 def show_image(disp):
     # Create blank image for drawing.
@@ -107,24 +114,24 @@ def show_image(disp):
     log("Done with fill Rect")
 
     image = Image.open("blinka.jpg")
-    image_l = Image.open("../assets/PicorderLogoSmall.png")
-    image_e = Image.open("../assets/Edith.jpeg")
-    log("Done loading PNG")
 
-    log(f"pixel = {image.getpixel((0,0))}")
-    log(f"size = ({image.width},{image.height})")
-    image = image_l.convert('RGB')
-    log("Done converting")
-    log(f"size = ({image.width},{image.height})")
+    if True:
+        image_l = Image.open("../assets/PicorderLogoSmall.png")
+        log("Done loading PNG")
+        log(f"size_l = ({image_l.width},{image_l.height})")
+        image_l = image_l.convert('RGB')
+        log("Done converting")
+        log(f"size_l = ({image_l.width},{image_l.height})")
+        disp.image(image_l)
+        log("Done displaying logo")
 
-    # Display image.
-    disp.image(image)
-    log("Done displaying")
-
-    log(f"size = ({image_e.width},{image_e.height})")
-    image_e = rescale(image_e)
-    log(f"size = ({image_e.width},{image_e.height})")
-    disp.image(image_e)
+    if False:
+        image_e = Image.open("../assets/Edith.jpeg")
+        log(f"size_e = ({image_e.width},{image_e.height})")
+        image_e = rescale(image_e)
+        log(f"size_e = ({image_e.width},{image_e.height})")
+        disp.image(image_e)
+        log("Done displaying edith")
 
 def show_text(disp, text):
     log("Start displaying text")
@@ -138,6 +145,8 @@ def show_text(disp, text):
 
     x = (WIDTH - font_width) // 2
     y = (HEIGHT - font_height) // 2
+    x = 10
+    y = 150
     #draw.text((WIDTH // 2 - font_width // 2, HEIGHT // 2 - font_height // 2),
     #          text, font=font, fill=(255, 255, 0))
     
@@ -152,11 +161,12 @@ def show_text(disp, text):
 def main():
     disp = setup()
     clear(disp)
-    show_image(disp)
+    #show_image(disp)
     show_text(disp, "Hello")
-    show_text(disp, "Goodbye")
-    while True:
-         show_text(disp, str(datetime.now().second))
+    #show_text(disp, "Goodbye")
+    #while True:
+    #     show_text(disp, str(datetime.now().second))
+    show_box(disp)
 
 
 if __name__ == "__main__":

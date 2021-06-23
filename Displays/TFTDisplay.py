@@ -79,9 +79,9 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
 
         # Display image.
         x, y = self._rotate(position[0], position[1])
-        self._lgr.info(f"TFT: img: disp = ({self.width},{self.height})")
-        self._lgr.info(f"TFT: img: img = ({pil_image.width},{pil_image.height})")
-        self._lgr.info(f"TFT: img: pos = ({x},{y})")
+#        self._lgr.info(f"TFT: img: disp = ({self.width},{self.height})")
+#        self._lgr.info(f"TFT: img: img = ({pil_image.width},{pil_image.height})")
+#        self._lgr.info(f"TFT: img: pos = ({x},{y})")
         self._surface.image(pil_image, x=x, y=y)
 
     def render_static_text(self, text, position, font_size=18):
@@ -117,7 +117,10 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         pass
 
     def _rotate(self, x, y):
-        if self._surface.rotation % 180 == 90:
+        if self._surface.rotation  == 90:
+            # we swap height/width to rotate it to landscape!
+            return y, x
+        if self._surface.rotation == 270:
             # we swap height/width to rotate it to landscape!
             return y, x
         else:

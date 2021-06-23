@@ -3,7 +3,6 @@ import pygame
 
 from Assets import Assets
 from Display import Display, DISPLAY_MODE
-from Inputs import Input
 from Logger import Logger
 from ModeTransitions import ModeMapper, Commands
 from ModeTransitions import TricorderMode, OperationMode
@@ -18,7 +17,6 @@ def build_tricorder():
     sensor_array = SensorArray()
     mode_mapper = ModeMapper(logger)
     tricorder = Tricorder(logger, display, sensor_array, mode_mapper)
-    tricorder._inputs = Input(logger)
     tricorder._records = Records(assets)
     return tricorder
 
@@ -32,7 +30,6 @@ class Tricorder:
         self._sensor_array = sensor_array
         self._mode_mapper = mode_mapper
 
-        self._inputs = None
         self._outputs = None
         self._records = None
         self._restart()
@@ -60,10 +57,9 @@ class Tricorder:
             sensor_bank = self._sensor_array.get_sensor_bank(self._mode_mapper.current_op_mode)
             self._display.update(disp_mode, sensor_bank)
 
-    def process_inputs(self, event):
-        if self._inputs is not None:
-            key = self._inputs.get_inputs(event)
-            self._switch_display_modes(key)
+    def process_button_press(self, button_press):
+        if button_press is not None:
+            self._switch_display_modes(button_press)
 
     def refresh(self):
         self._display.tick_display()

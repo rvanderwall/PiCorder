@@ -44,7 +44,7 @@ class KBInput:
         self._log = logger.info
         self.current_button = None
 
-    def get_inputs(self, event):
+    def get_button_press(self):
         if self.kb.kbhit():
             c = self.kb.getch()
             if ord(c) == 120 or ord(c) == 27:  # 'x' or ESC
@@ -56,7 +56,7 @@ class KBInput:
             if ord(c) == ord('b'):
                 self._log("You pressed the B button")
                 self.current_button = BUTTON_B
-            if ord(c) == ord(c):
+            if ord(c) == ord('c'):
                 self._log("You pressed the C button")
                 self.current_button = BUTTON_C
         else:
@@ -73,7 +73,7 @@ class Input:
         self._log = logger.info
         self.current_button = None
 
-    def get_inputs(self, event):
+    def get_button_press(self, event):
         # Make sure focus is on the Display window NOT the console!!
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_a:
