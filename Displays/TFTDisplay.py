@@ -14,7 +14,6 @@ except Exception as ex:
 #
 # Tricorder display Constants
 #
-FPS = 30
 
 
 class TFT_Display(IDisplay):  # pylint: disable=camel-case
@@ -26,6 +25,7 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
 
         # Config for display baudrate (default max is 24mhz):
         BAUDRATE = 24_000_000
+        self.FPS = 30
 
         # Setup SPI bus using hardware SPI:
         spi = board.SPI()
@@ -42,7 +42,9 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
             baudrate=BAUDRATE,
         )
 
-        self.width, self.height = self._rotate(self._surface.width, self._surface.height)
+        # display X is up.down and Y is left/right
+        # surface shape = (240, 320)
+        self.width, self.height = self._surface.height, self._surface.width
 
         self.large_font = assets.large_font
         self.current_background = None
@@ -117,12 +119,22 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         pass
 
     def _rotate(self, x, y):
+        '''
+            The TFT display has (0, 0) in the lower left, regardless of
+            rotation.  X is up/down, Y is left/right with the way the display
+            is mounted.
+            images/text are painted with x,y at the lower left corner
+            when rotation is 270
+        :param x:
+        :param y:
+        :return:
+        '''
         if self._surface.rotation  == 90:
             # we swap height/width to rotate it to landscape!
             return y, x
         if self._surface.rotation == 270:
             # we swap height/width to rotate it to landscape!
-            return y, x
+            return self.height - y, x
         else:
             return x, y
 

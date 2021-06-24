@@ -3,31 +3,28 @@ import sys
 import pygame
 from pygame.locals import *
 
-from Inputs import Input, KBInput, BUTTON_QUIT
-from Tricorder import build_tricorder, TricorderMode
-
-
-def init():
-    pygame.init()
-    pygame.mixer.quit()
-    pygame.display.set_caption("PyGame Demo")
-    tricorder = build_tricorder()
-    return tricorder
+from Inputs import get_mode_select, ButtonPress, KBInput, BUTTON_QUIT
+from Tricorder import build_tricorder
 
 
 def pg_game_loop(tricorder):
-    input = Input(tricorder.logger)
+    pygame.init()
+    pygame.mixer.quit()
+    pygame.display.set_caption("Tricorder")
+
+    inp = ButtonPress(tricorder.logger)
+    tricorder.refresh()
     while True:
         tricorder.update_sensors()
         tricorder.update_display()
 
         event_list = pygame.event.get()
         for event in event_list:
-            if event.type == QUIT:
+            key = inp.get_button_press(event)
+            if event.type == QUIT or key == BUTTON_QUIT:
                 pygame.quit()
                 sys.exit()
 
-            key = input.get_button_press(event)
             tricorder.process_button_press(key)
 
         tricorder.refresh()
@@ -35,6 +32,7 @@ def pg_game_loop(tricorder):
 
 def game_loop(tricorder):
     kb = KBInput(tricorder.logger)
+    tricorder.refresh()
     while True:
         tricorder.update_sensors()
         tricorder.update_display()
@@ -48,9 +46,15 @@ def game_loop(tricorder):
         tricorder.refresh()
 
 
-if __name__ == '__main__':
-    t = init()
-    if t.mode == TricorderMode.LAPTOP:
-        pg_game_loop(t)
-    else:
+def main():
+    hw_mode = get_mode_select()
+    t = build_tricorder(hw_mode)
+    if t.mode.TFT:
+        # Can't use pygame loop without display
         game_loop(t)
+    else:
+        pg_game_loop(t)
+
+
+if __name__ == '__main__':
+    main()

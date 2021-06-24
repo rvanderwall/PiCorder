@@ -6,12 +6,12 @@ from Logger import Logger
 #
 # Tricorder display Constants
 #
-FPS = 1
 
 
 class PyGameDisplay(IDisplay):
     def __init__(self, logger: Logger, assets: Assets):
         super().__init__(logger, assets)
+        self.FPS = 5
         self.width = 320
         self.height = 240
         self._surface = pygame.display.set_mode((self.width, self.height))

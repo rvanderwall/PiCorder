@@ -13,6 +13,14 @@ BUTTON_C = 2
 BUTTON_QUIT = 3
 
 
+def get_mode_select():
+    # 0 => TFT, Run
+    # 1 => Win, Run
+    # 2 => TFT, Demo
+    # 3 => Win, Demo
+    return 3
+
+
 class KBHit:
     def __init__(self):
         # Save the terminal settings
@@ -68,7 +76,7 @@ class KBInput:
         self.kb.set_normal_term()
 
 
-class Input:
+class ButtonPress:
     def __init__(self, logger: Logger):
         self._log = logger.info
         self.current_button = None

@@ -6,27 +6,29 @@ from Indicator import Indicator, Indicator3D
 from Logger import Logger
 from Records import Record
 
+from Displays.PyGameDisplay import PyGameDisplay
+TFT_ALLOWED = False
+
+
 try:
     import digitalio
-    from Displays.TFTDisplay import TFT_Display, FPS
-    DISPLAY_MODE = "TFT"
-    lg = Logger("Startup")
-    lg.info("Entering TFT display mode")
+    from Displays.TFTDisplay import TFT_Display
+    TFT_ALLOWED = True
 except Exception as ex:
-    from Displays.PyGameDisplay import PyGameDisplay, FPS
-    DISPLAY_MODE = "WINDOW"
-    lg = Logger("Startup")
-    lg.info("Entering WINDOW display mode")
+    pass
 
 
 class Display:
-    def __init__(self, logger: Logger, assets: Assets):
+    def __init__(self, logger: Logger, assets: Assets, tft_mode=False):
         self._lgr = logger
-        if DISPLAY_MODE == "TFT":
+        self._display = None
+        if tft_mode:
             assets.set_tft_mode()
             self._display = TFT_Display(logger, assets)
+            self._lgr.info("Entering TFT display mode")
         else:
             self._display = PyGameDisplay(logger, assets)
+            self._lgr.info("Entering WINDOW display mode")
 
         self._frame_rate = pygame.time.Clock()
         self._prev_mode = None
@@ -43,7 +45,7 @@ class Display:
         self._display.clear()
 
     def tick_display(self):
-        self._frame_rate.tick(FPS)
+        self._frame_rate.tick(self._display.FPS)
 
     def update(self, mode, data_src):
         self._lgr.info("Display: Update")

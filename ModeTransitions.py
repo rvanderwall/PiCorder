@@ -3,11 +3,10 @@ from Inputs import BUTTON_A, BUTTON_B, BUTTON_C, BUTTON_QUIT
 from Logger import Logger
 
 
-@unique
-class TricorderMode(Enum):
-    LAPTOP = 0
-    RASP_PI_DEMO = 1
-    RASP_PI_SENSORS = 2
+class TricorderMode:
+    def __init__(self):
+        self.TFT = False
+        self.Demo = False
 
 
 @unique
