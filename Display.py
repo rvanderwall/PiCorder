@@ -153,4 +153,3 @@ class Display:
         self.clear()
         self._display.render_image(self._assets.logo, self._assets.logo_position)
         self._display.render_static_text(self._assets.logo_txt, self._assets.txt_position, font_size=33)
-

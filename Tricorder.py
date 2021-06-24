@@ -57,14 +57,14 @@ class Tricorder:
 
     def update_display(self):
         disp_mode = self._display_mode()
-        sensor_mode = self._operating_mode()
-        if sensor_mode == OperationMode.RECORDS:
+        operating_mode = self._operating_mode()
+        if operating_mode == OperationMode.RECORDS:
             current_record = self._records.get_current_record()
             self._display.update(disp_mode, current_record)
-        elif sensor_mode == OperationMode.INIT:
+        elif operating_mode == OperationMode.INIT:
             self._display.update(disp_mode, [])
         else:
-            sensor_bank = self._sensor_array.get_sensor_bank(self._operating_mode())
+            sensor_bank = self._sensor_array.get_sensor_bank(operating_mode)
             self._display.update(disp_mode, sensor_bank)
 
     def process_button_press(self, button_press):
@@ -89,7 +89,7 @@ class Tricorder:
         elif command == Commands.NEXT:
             self._records.next_record()
         elif command == Commands.TERMINATE:
-            pass
+            pass    # Handled in outer event loop
         else:
             pass
 

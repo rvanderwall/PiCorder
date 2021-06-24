@@ -5,6 +5,9 @@ import atexit
 from select import select
 from time import sleep
 
+#
+# Cannot be run in the IDE
+#
 
 class KBHit:
     def __init__(self):

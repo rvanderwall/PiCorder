@@ -119,7 +119,7 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         pass
 
     def _rotate(self, x, y):
-        '''
+        """
             The TFT display has (0, 0) in the lower left, regardless of
             rotation.  X is up/down, Y is left/right with the way the display
             is mounted.
@@ -127,9 +127,9 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
             when rotation is 270
         :param x:
         :param y:
-        :return:
-        '''
-        if self._surface.rotation  == 90:
+        :return: new x, y
+        """
+        if self._surface.rotation == 90:
             # we swap height/width to rotate it to landscape!
             return y, x
         if self._surface.rotation == 270:

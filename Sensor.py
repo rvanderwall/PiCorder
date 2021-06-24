@@ -152,7 +152,7 @@ class AccelerationSensor(Sensor):
 class MagnetometerSensor(Sensor):
     def __init__(self):
         super().__init__(min_val=-5.0, max_val=5.0)
-        self.info = "Megnetic flux in mT"
+        self.info = "Magnetic flux in mT"
 
     def get_emulation_sensor_value(self):
         return 125.0, -100.0, 500.0

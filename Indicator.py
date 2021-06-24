@@ -84,7 +84,7 @@ class Indicator3D(Indicator):
         for _ in range(self.num_points):
             self.history.append(mid)    # Fill history with mid-point data
 
-    def _scale(self, val):
+    def _scale(self, val: tuple):
         x, y, z = val
         t_x = self.graph_bottom - self.scale * (x - self.min)
         t_y = self.graph_bottom - self.scale * (y - self.min)
