@@ -13,12 +13,13 @@ class Assets:
         self.spock = pygame.image.load('./assets/spock.png')
         self.logo = pygame.image.load('assets/PicorderLogoSmall.png')
         self.logo_txt = "StarFleet Tricorder TR-109"
-        self.logo_position = (90, 0)
+        self.logo_position = (90, 0)   # Upper left corner
         self.txt_position = (10, 180)
 
     def set_tft_mode(self):
         font_size = 22
-        self.large_font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', font_size)
+        # self.large_font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', font_size)
+        self.large_font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSans.ttf', font_size)
         font_size = 15
         self.font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', font_size)
         self.scales = Image.open('./assets/background.png').convert('RGB')
@@ -28,5 +29,5 @@ class Assets:
         self.spock = Image.open('./assets/spock.png').convert('RGB')
         self.logo = Image.open('assets/PicorderLogoSmall.png').convert('RGB')
         self.logo_txt = "StarFleet Tricorder TR-109"
-        self.logo_position = (96, 50)
-        self.txt_position = (0, 0)
+        self.logo_position = (90, 0)
+        self.txt_position = (0, 180)

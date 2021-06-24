@@ -14,11 +14,9 @@ BUTTON_QUIT = 3
 
 
 def get_mode_select():
-    # 0 => TFT, Run
-    # 1 => Win, Run
-    # 2 => TFT, Demo
-    # 3 => Win, Demo
-    return 3
+    # bit 0 => TFT
+    # bit 1 => Demo 
+    return 1
 
 
 class KBHit:

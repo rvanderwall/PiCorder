@@ -114,7 +114,7 @@ class Display:
             lbl_idx += 1
 
     def _update_graphs(self, sensor_array):
-        self._display.render_image(self._grid, (0, 0))
+        self._display.render_background(self._grid)
         lbl_idx = 0
         row_height = 20
         offset = 0

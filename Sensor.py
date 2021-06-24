@@ -98,7 +98,7 @@ class HumiditySensor(Sensor):
 class PressureSensor(Sensor):
     def __init__(self):
         super().__init__(min_val=280, max_val=1280)
-        self.info = "Atmospheric Pressure mm Hg"
+        self.info = "Pressure mm Hg"
 
     def get_emulation_sensor_value(self):
         ts = time.time() * 10

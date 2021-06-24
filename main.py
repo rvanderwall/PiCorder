@@ -7,11 +7,14 @@ from Inputs import get_mode_select, ButtonPress, KBInput, BUTTON_QUIT
 from Tricorder import build_tricorder
 
 
-def pg_game_loop(tricorder):
+def init():
     pygame.init()
     pygame.mixer.quit()
     pygame.display.set_caption("Tricorder")
+    hw_mode = get_mode_select()
+    return build_tricorder(hw_mode)
 
+def pg_game_loop(tricorder):
     inp = ButtonPress(tricorder.logger)
     tricorder.refresh()
     while True:
@@ -47,8 +50,7 @@ def game_loop(tricorder):
 
 
 def main():
-    hw_mode = get_mode_select()
-    t = build_tricorder(hw_mode)
+    t = init()
     if t.mode.TFT:
         # Can't use pygame loop without display
         game_loop(t)

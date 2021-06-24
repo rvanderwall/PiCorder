@@ -80,10 +80,10 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
             pil_image = self._scale_image(pil_image)
 
         # Display image.
-        x, y = self._rotate(position[0], position[1])
-#        self._lgr.info(f"TFT: img: disp = ({self.width},{self.height})")
-#        self._lgr.info(f"TFT: img: img = ({pil_image.width},{pil_image.height})")
-#        self._lgr.info(f"TFT: img: pos = ({x},{y})")
+        x, y = self._rotate(position[0], position[1], pil_image.height)
+        # self._lgr.info(f"TFT: img: disp = ({self.width},{self.height})")
+        # self._lgr.info(f"TFT: img: img = ({pil_image.width},{pil_image.height})")
+        # self._lgr.info(f"TFT: img: pos = ({x},{y})")
         self._surface.image(pil_image, x=x, y=y)
 
     def render_static_text(self, text, position, font_size=18):
@@ -106,10 +106,10 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         draw = ImageDraw.Draw(image)
         draw.text((0, 0), text, font=font, fill=SF_YELLOW)
 
-        x, y = self._rotate(position[0], position[1])
-        self._lgr.info(f"TFT: txt: disp = ({self.width},{self.height})")
-        self._lgr.info(f"TFT: txt: txt = ({font_width},{font_height})")
-        self._lgr.info(f"TFT: txt: pos = ({x},{y})")
+        x, y = self._rotate(position[0], position[1], font_height)
+        # self._lgr.info(f"TFT: txt: disp = ({self.width},{self.height})")
+        # self._lgr.info(f"TFT: txt: txt = ({font_width},{font_height}) ['{text}']")
+        # self._lgr.info(f"TFT: txt: pos = ({x},{y})")
         self._surface.image(image, x=x, y=y)
 
     def render_lines(self, color, data):
@@ -118,13 +118,14 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
     def update(self):
         pass
 
-    def _rotate(self, x, y):
+    def _rotate(self, x, y, image_height):
         """
             The TFT display has (0, 0) in the lower left, regardless of
             rotation.  X is up/down, Y is left/right with the way the display
             is mounted.
             images/text are painted with x,y at the lower left corner
             when rotation is 270
+            x, y are intended to be upper, left
         :param x:
         :param y:
         :return: new x, y
@@ -134,20 +135,24 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
             return y, x
         if self._surface.rotation == 270:
             # we swap height/width to rotate it to landscape!
-            return self.height - y, x
+            return self.height - y - image_height, x
         else:
             return x, y
 
     def _scale_image(self, pil_image):
+        self._lgr.info("TFT: scale image")
         image_ratio = pil_image.width / pil_image.height
         screen_ratio = self.width / self.height
-        if screen_ratio < image_ratio:
+        if screen_ratio > image_ratio:
             scaled_width = pil_image.width * self.height // pil_image.height
             scaled_height = self.height
         else:
             scaled_width = self.width
             scaled_height = pil_image.height * self.width // pil_image.width
         image = pil_image.resize((scaled_width, scaled_height), Image.BICUBIC)
+        # self._lgr.info(f"TFT: scale: disp = ({self.width},{self.height})")
+        # self._lgr.info(f"TFT: scale: pil = ({pil_image.width},{pil_image.height}) [{image_ratio}]")
+        # self._lgr.info(f"TFT: scale: img = ({image.width},{image.height}) [{image_ratio}]")
         return image
 
     def _crop_image(self, image):
