@@ -156,7 +156,11 @@ def show_text(disp, text):
     log(f"size = ({image.width},{image.height})")
     disp.image(image, x=x, y=y)
     log("After image")
-    
+
+def show_bmp(disp):
+    names = ['graph', 'scales', 'Edith', 'logo', 'spock']
+    disp.bmpDraw('graph.bmp', 0, 0)
+
 
 def main():
     disp = setup()
