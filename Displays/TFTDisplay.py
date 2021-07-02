@@ -1,3 +1,4 @@
+import numpy as np      # Not used here, but ensures its installed for driver
 from Logger import Logger
 from Assets import Assets
 from Displays.IDisplay import IDisplay, SF_YELLOW, BLACK
@@ -12,8 +13,9 @@ except Exception as ex:
 
 
 #
-# Tricorder display Constants
+# https://github.com/adafruit/Adafruit_CircuitPython_RGB_Display/tree/main/adafruit_rgb_display
 #
+
 
 
 class TFT_Display(IDisplay):  # pylint: disable=camel-case

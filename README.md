@@ -59,6 +59,9 @@ but they look really well constructed.
 > python3 -m venv venv
 > source venv/bin/activate
 > pip install --upgrade pip
+> sudo apt-get install ttf-dejavu
+> sudo apt-get install python3-pil
+> pip install numpy
 > pip install Pillow
 > pip install pygame==1.9.4
 > pip install board
