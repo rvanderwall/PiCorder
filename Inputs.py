@@ -40,7 +40,7 @@ class KBHit:
         return sys.stdin.read(1)
 
     def kbhit(self):
-        dr,dw,de = select([sys.stdin], [], [], 0)
+        dr, dw, de = select([sys.stdin], [], [], 0)
         return dr != []
 
 

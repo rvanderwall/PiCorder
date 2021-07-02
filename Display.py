@@ -5,6 +5,7 @@ from ModeTransitions import DisplayMode
 from Indicator import Indicator, Indicator3D
 from Logger import Logger
 from Records import Record
+from SensorBanks import SensorArray
 
 from Displays.PyGameDisplay import PyGameDisplay
 TFT_ALLOWED = False
@@ -39,7 +40,6 @@ class Display:
         self._scales = assets.scales
         self._grid = assets.grid
         self._slider_img = assets.slider_img
-        self._lbl_vertical = False    # If labels are horizontal or vertical
 
     def clear(self):
         self._display.clear()
@@ -70,7 +70,7 @@ class Display:
         else:
             self._update_to_unknown(mode)
 
-    def _update_sensor_disp(self, mode, sensor_array):
+    def _update_sensor_disp(self, mode, sensor_array: SensorArray):
         if mode == DisplayMode.SLIDER:
             self._update_sliders(sensor_array)
         elif mode == DisplayMode.GRAPH:
@@ -80,10 +80,9 @@ class Display:
         else:
             self._update_to_unknown(mode)
 
-    def _update_sliders(self, sensor_array):
+    def _update_sliders(self, sensor_array: SensorArray):
         self._display.render_background(self._scales)
-        for sensor_type in sensor_array:
-            indicator = sensor_array[sensor_type]
+        for indicator in sensor_array.sensors:
             assert isinstance(indicator, Indicator)
             self._display.render_image(self._slider_img, indicator.get_position())
 
@@ -92,14 +91,12 @@ class Display:
         self._display.render_static_text(hdr, (20, 20))
         self._display.render_static_text(str_text, (20, 50))
 
-    def _update_sensor_text(self, sensor_array):
+    def _update_sensor_text(self, sensor_array: SensorArray):
         lbl_idx = 0
-        hdr = f"Sensor Bank [{len(sensor_array)} sensors]"
+        hdr = f"Sensor Array {sensor_array.name}: [{len(sensor_array.sensors)} sensors]"
         self._display.render_static_text(hdr, (20, 20))
 
-        self._lbl_vertical = True
-        for sensor_type in sensor_array:
-            indicator = sensor_array[sensor_type]
+        for indicator in sensor_array.sensors:
             if isinstance(indicator, Indicator3D):
                 v = indicator.cur_val
                 val_txt = f"[{v[0]:.2f}, {v[1]:.2f}, {v[2]:.2f}]"
@@ -109,40 +106,36 @@ class Display:
                 lbl = f"{indicator.label} {indicator.cur_val:.2f} | {indicator.info_txt}"
 
             row_height = 20
-            position = self._label_pos(lbl_idx, row_height)
+            position = self._stack_label_pos(lbl_idx, row_height)
             self._display.render_dynamic_text(lbl, position)
             lbl_idx += 1
 
-    def _update_graphs(self, sensor_array):
+    def _update_graphs(self, sensor_array: SensorArray):
         self._display.render_background(self._grid)
         lbl_idx = 0
         row_height = 20
         offset = 0
-        self._lbl_vertical = False
-        for sensor_type in sensor_array:
-            indicator = sensor_array[sensor_type]
+        for indicator in sensor_array.sensors:
             assert isinstance(indicator, Indicator)
             self._display.render_lines(indicator.color, indicator.get_history())
 
             lbl = f"{indicator.label} {indicator.cur_val:.2f}"
-            x_lbl_pos, y_lbl_pos = self._label_pos(lbl_idx, row_height, offset)
+            x_lbl_pos, y_lbl_pos = self._row_label_pos(lbl_idx, row_height, offset)
             self._display.render_dynamic_text(lbl, (x_lbl_pos, y_lbl_pos), )
             lbl_idx += 1
             offset += indicator.text_width
 
-    def _label_pos(self, lbl_num, row_height, offset=None):
-        if self._lbl_vertical:
-            # Stack Vertically
-            x_lbl_pos = 20
-            y_lbl_pos = self._display.height // 2
-            y_lbl_pos += lbl_num * row_height
-        else:
-            # Stack Horizontally
-            if offset is None:
-                x_lbl_pos = 20 + lbl_num * 65
-            else:
-                x_lbl_pos = 20 + offset
-            y_lbl_pos = 206
+    def _stack_label_pos(self, lbl_num, row_height):
+        # Stack Vertically
+        x_lbl_pos = 20
+        y_lbl_pos = 0.3 * self._display.height
+        y_lbl_pos += lbl_num * row_height
+        return x_lbl_pos, int(y_lbl_pos)
+
+    def _row_label_pos(self, lbl_num, row_height, offset):
+        # Stack Horizontally
+        x_lbl_pos = 20 + offset
+        y_lbl_pos = 206
 
         return x_lbl_pos, y_lbl_pos
 

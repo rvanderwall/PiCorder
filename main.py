@@ -14,6 +14,7 @@ def init():
     hw_mode = get_mode_select()
     return build_tricorder(hw_mode)
 
+
 def pg_game_loop(tricorder):
     inp = ButtonPress(tricorder.logger)
     tricorder.refresh()
@@ -60,3 +61,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

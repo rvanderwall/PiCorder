@@ -50,7 +50,7 @@ but they look really well constructed.
 - Inputs: button inputs
 - ModeTransitions: state machine for display modes and sensor modes
 - Records: Archives and other records.
-- Sensor: Reads sensors
+- Sensor: Reads physical sensors
 - SensorArray: Collection of sensors for each mode.
 - Tricorder: overall coordination and modes: demo, live, simulated.
 

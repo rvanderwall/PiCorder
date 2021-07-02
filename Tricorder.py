@@ -7,7 +7,7 @@ from Logger import Logger
 from ModeTransitions import ModeMapper, Commands
 from ModeTransitions import TricorderMode, OperationMode
 from Records import Records
-from SensorArray import SensorArray
+from SensorBanks import SensorBanks
 
 
 def build_tricorder(hw_mode):
@@ -16,19 +16,19 @@ def build_tricorder(hw_mode):
     mode_mapper = ModeMapper(logger)
     mode = Tricorder.get_mode(hw_mode, TFT_ALLOWED)
     display = Display(logger, assets, tft_mode=mode.TFT)
-    sensor_array = SensorArray()
+    sensor_array = SensorBanks()
     tricorder = Tricorder(logger, display, sensor_array, mode_mapper, mode)
     tricorder._records = Records(assets)
     return tricorder
 
 
 class Tricorder:
-    def __init__(self, logger: Logger, display: Display, sensor_array: SensorArray,
+    def __init__(self, logger: Logger, display: Display, sensor_banks: SensorBanks,
                  mode_mapper: ModeMapper, mode: TricorderMode):
         self.logger = logger
 
         self._display = display
-        self._sensor_array = sensor_array
+        self._sensor_banks = sensor_banks
         self._mode_mapper = mode_mapper
 
         self._outputs = None
@@ -50,10 +50,9 @@ class Tricorder:
         return mode
 
     def update_sensors(self):
-        sensor_bank = self._sensor_array.get_sensor_bank(self._operating_mode())
-        for sensor_type in sensor_bank:
-            sensor = sensor_bank[sensor_type]
-            sensor.update_value()
+        sensor_array = self._sensor_banks.get_sensor_array(self._operating_mode())
+        for indicator in sensor_array.sensors:
+            indicator.update_value()
 
     def update_display(self):
         disp_mode = self._display_mode()
@@ -64,8 +63,8 @@ class Tricorder:
         elif operating_mode == OperationMode.INIT:
             self._display.update(disp_mode, [])
         else:
-            sensor_bank = self._sensor_array.get_sensor_bank(operating_mode)
-            self._display.update(disp_mode, sensor_bank)
+            sensor_array = self._sensor_banks.get_sensor_array(operating_mode)
+            self._display.update(disp_mode, sensor_array)
 
     def process_button_press(self, button_press):
         if button_press is not None:

@@ -17,7 +17,6 @@ except Exception as ex:
 #
 
 
-
 class TFT_Display(IDisplay):  # pylint: disable=camel-case
     def __init__(self, logger: Logger, assets: Assets):
         super().__init__(logger, assets)
@@ -56,6 +55,7 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         self._lgr.info("TFT: Clearing display with fill")
         self._surface.fill(0)
         self._static_text = []
+        self.current_background = None
 
     def clear2(self):
         self._lgr.info("TFT: Clearing display with draw")
