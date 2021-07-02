@@ -61,6 +61,7 @@ but they look really well constructed.
 > pip install --upgrade pip
 > sudo apt-get install ttf-dejavu
 > sudo apt-get install python3-pil
+> sudo apt install libatlas3-base
 > pip install numpy
 > pip install Pillow
 > pip install pygame==1.9.4

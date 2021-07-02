@@ -1,4 +1,4 @@
-import numpy as np      # Not used here, but ensures its installed for driver
+import numpy      # Not used here, but ensures its installed for driver
 from Logger import Logger
 from Assets import Assets
 from Displays.IDisplay import IDisplay, SF_YELLOW, BLACK

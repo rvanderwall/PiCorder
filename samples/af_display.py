@@ -5,6 +5,7 @@
 # Will fill the TFT black and put a red pixel in the center, wait 2 seconds,
 # then fill the screen blue (with no pixel), wait 2 seconds, and repeat.
 import time
+from datetime import datetime
 import random
 import busio
 import digitalio
@@ -14,21 +15,34 @@ from adafruit_rgb_display.rgb import color565
 import adafruit_rgb_display.ili9341 as ili9341
 
 
+def log(msg):
+    t = datetime.now()
+    print(f"{t}: {msg}")
+
 # Configuratoin for CS and DC pins (these are FeatherWing defaults on M0/M4):
-cs_pin = digitalio.DigitalInOut(board.D9)
-dc_pin = digitalio.DigitalInOut(board.D10)
+cs_pin = digitalio.DigitalInOut(board.CE0)
+dc_pin = digitalio.DigitalInOut(board.D25)
+reset_pin = digitalio.DigitalInOut(board.D24)
 
 # Config for display baudrate (default max is 24mhz):
 BAUDRATE = 24000000
 
 # Setup SPI bus using hardware SPI:
-spi = busio.SPI(clock=board.SCK, MOSI=board.MOSI, MISO=board.MISO)
+#spi = busio.SPI(clock=board.SCK, MOSI=board.MOSI, MISO=board.MISO)
+spi = board.SPI()
 
 # Create the ILI9341 display:
-display = ili9341.ILI9341(spi, cs=cs_pin, dc=dc_pin, baudrate=BAUDRATE)
+display = ili9341.ILI9341(
+		spi,
+		rotation=270,
+		cs=cs_pin,
+		dc=dc_pin, 
+		rst=reset_pin,
+		baudrate=BAUDRATE)
 
 # Main loop:
 while True:
+    log("looping")
     # Fill the screen red, green, blue, then black:
     for color in ((255, 0, 0), (0, 255, 0), (0, 0, 255)):
         display.fill(color565(color))
@@ -45,4 +59,4 @@ while True:
     # Pause 2 seconds.
     time.sleep(2)
 
-    display.bmpDraw("spock.bmp", 0, 0)
+    # display.bmpDraw("spock.bmp", 0, 0)

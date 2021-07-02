@@ -18,10 +18,11 @@ import board
 from PIL import Image, ImageDraw, ImageFont
 import adafruit_rgb_display.ili9341 as ili9341
 
+import numpy
 
 WIDTH = 320
 HEIGHT = 240
-BAUDRATE = 64_000_000
+BAUDRATE = 24_000_000
 
 
 def log(msg):
@@ -115,7 +116,7 @@ def show_image(disp):
 
     image = Image.open("blinka.jpg")
 
-    if True:
+    if False:
         image_l = Image.open("../assets/PicorderLogoSmall.png")
         log("Done loading PNG")
         log(f"size_l = ({image_l.width},{image_l.height})")
@@ -125,7 +126,7 @@ def show_image(disp):
         disp.image(image_l)
         log("Done displaying logo")
 
-    if False:
+    if True:
         image_e = Image.open("../assets/Edith.jpeg")
         log(f"size_e = ({image_e.width},{image_e.height})")
         image_e = rescale(image_e)
@@ -165,8 +166,8 @@ def show_bmp(disp):
 def main():
     disp = setup()
     clear(disp)
-    #show_image(disp)
-    show_text(disp, "Hello")
+    show_image(disp)
+    #show_text(disp, "Hello")
     #show_text(disp, "Goodbye")
     #while True:
     #     show_text(disp, str(datetime.now().second))
