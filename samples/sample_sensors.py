@@ -77,11 +77,11 @@ def get_all():
 
 
 sensors = [
-    ("SHT31-D",get_SHT31),
-    ("BMP280",get_BMP280),
-    ("LSM303AGR",get_LSM303AGR),
-    ("all",get_all),
-    ("exit",exit)]
+    ("SHT31-D", get_SHT31),
+    ("BMP280", get_BMP280),
+    ("LSM303AGR", get_LSM303AGR),
+    ("all", get_all),
+    ("exit", exit)]
 
 
 def run():

@@ -19,6 +19,7 @@ def log(msg):
     t = datetime.now()
     print(f"{t}: {msg}")
 
+
 # Configuratoin for CS and DC pins (these are FeatherWing defaults on M0/M4):
 cs_pin = digitalio.DigitalInOut(board.CE0)
 dc_pin = digitalio.DigitalInOut(board.D25)
@@ -28,17 +29,17 @@ reset_pin = digitalio.DigitalInOut(board.D24)
 BAUDRATE = 24000000
 
 # Setup SPI bus using hardware SPI:
-#spi = busio.SPI(clock=board.SCK, MOSI=board.MOSI, MISO=board.MISO)
+# spi = busio.SPI(clock=board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 spi = board.SPI()
 
 # Create the ILI9341 display:
 display = ili9341.ILI9341(
-		spi,
-		rotation=270,
-		cs=cs_pin,
-		dc=dc_pin, 
-		rst=reset_pin,
-		baudrate=BAUDRATE)
+        spi,
+        rotation=270,
+        cs=cs_pin,
+        dc=dc_pin,
+        rst=reset_pin,
+        baudrate=BAUDRATE)
 
 # Main loop:
 while True:

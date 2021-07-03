@@ -1,4 +1,3 @@
-import os
 import sys
 import termios
 import atexit
@@ -8,6 +7,7 @@ from time import sleep
 #
 # Cannot be run in the IDE
 #
+
 
 class KBHit:
     def __init__(self):
@@ -31,7 +31,7 @@ class KBHit:
 
 
     def kbhit(self):
-        dr,dw,de = select([sys.stdin], [], [], 0)
+        dr, dw, de = select([sys.stdin], [], [], 0)
         return dr != []
 
 
@@ -41,7 +41,7 @@ def main():
     while True:
         if kb.kbhit():
             c = kb.getch()
-            if ord(c) == 120 or ord(c) == 27: # 'x' or ESC
+            if ord(c) == 120 or ord(c) == 27:   # 'x' or ESC
                 break
             print(f"Got char {c} / ord = {ord(c)}")
         print("Looping")

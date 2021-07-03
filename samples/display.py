@@ -29,7 +29,9 @@ def log(msg):
     t = datetime.now()
     print(f"{t}: {msg}")
 
+
 log("Done with imports")
+
 
 def setup():
     # Configuration for CS and DC pins (these are PiTFT defaults):
@@ -94,12 +96,14 @@ def rescale(image):
 
     return image.resize((scaled_width, scaled_height), Image.BICUBIC)
 
+
 def show_box(disp):
     image = Image.new('RGB', (10, 10))
     draw = ImageDraw.Draw(image)
     draw.rectangle((0, 0, 10, 10), fill=(255, 0, 0))
     disp.image(image, x=10, y=150)
     log("Done painting box")
+
 
 def show_image(disp):
     # Create blank image for drawing.
@@ -114,8 +118,6 @@ def show_image(disp):
     draw.rectangle((0, 0, WIDTH, HEIGHT), outline=0, fill=(0, 0, 0))
     log("Done with fill Rect")
 
-    image = Image.open("blinka.jpg")
-
     if False:
         image_l = Image.open("../assets/PicorderLogoSmall.png")
         log("Done loading PNG")
@@ -127,12 +129,14 @@ def show_image(disp):
         log("Done displaying logo")
 
     if True:
+        # image = Image.open("blinka.jpg")
         image_e = Image.open("../assets/Edith.jpeg")
         log(f"size_e = ({image_e.width},{image_e.height})")
         image_e = rescale(image_e)
         log(f"size_e = ({image_e.width},{image_e.height})")
         disp.image(image_e)
         log("Done displaying edith")
+
 
 def show_text(disp, text):
     log("Start displaying text")
@@ -158,6 +162,7 @@ def show_text(disp, text):
     disp.image(image, x=x, y=y)
     log("After image")
 
+
 def show_bmp(disp):
     names = ['graph', 'scales', 'Edith', 'logo', 'spock']
     disp.bmpDraw('graph.bmp', 0, 0)
@@ -167,9 +172,9 @@ def main():
     disp = setup()
     clear(disp)
     show_image(disp)
-    #show_text(disp, "Hello")
-    #show_text(disp, "Goodbye")
-    #while True:
+    # show_text(disp, "Hello")
+    # show_text(disp, "Goodbye")
+    # while True:
     #     show_text(disp, str(datetime.now().second))
     show_box(disp)
 

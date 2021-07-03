@@ -9,6 +9,7 @@ from pygame.locals import *
 #
 # General Display constants
 #
+# noinspection MultipleSpacesBeforeOperator
 RED   = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE  = (0, 0, 255)
@@ -26,6 +27,7 @@ upper_left = (0, 0)
 lower_right = (MAX_X, MAX_Y)
 
 COUNTER = 0
+
 
 class IndicatorSensor:
     def __init__(self, name:str, pos:int, min:float, max:float):
