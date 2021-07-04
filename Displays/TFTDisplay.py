@@ -7,6 +7,7 @@ try:
     import board
     from PIL import Image, ImageDraw, ImageFont
     import adafruit_rgb_display.ili9341 as ili9341
+    from adafruit_rgb_display import color565
 except Exception as ex:
     lg = Logger("Startup")
     lg.info(f"import fail: {ex}")
@@ -135,10 +136,13 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
 
     def render_lines(self, color, data):
         self._lgr.info("TFT: Render lines") if self._verbose else None
-        color = ((color[0] * 256 ) + color[1])
+        color = color565(color)
         print(f"Line has {len(data)} points")
         for point in data:
+            if point[0] % 2 == 0:
+                pass
             x, y = self._rotate(point[0], point[1], 1)
+            self._clear_area((x,y), (2,2), color)
             self._surface.pixel(x, y, color)
 
     def update(self):
@@ -188,7 +192,7 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         image = image.crop((x, y, x + self.width, y + self.height))
         return image
 
-    def _clear_area(self, pos, size):
+    def _clear_area(self, pos, size, color=0):
         self._lgr.info("TFT: Clearing display area") if self._verbose else None
-        self._surface.fill_rectangle(pos[0], pos[1], size[0], size[1], 0)
+        self._surface.fill_rectangle(pos[0], pos[1], size[0], size[1], color)
 
