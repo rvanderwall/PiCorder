@@ -65,7 +65,7 @@ class Display:
 
     def _update_records_disp(self, mode, data_src):
         if mode == DisplayMode.VIDEO:
-            self._display.render_image(data_src.image, (0, 0))
+            self._display.render_static_image(data_src.image, (0, 0))
         elif mode == DisplayMode.TEXT:
             self._update_record_text(data_src.text)
         else:
@@ -83,9 +83,12 @@ class Display:
 
     def _update_sliders(self, sensor_array: SensorArray):
         self._display.render_background(self._scales)
+        images = []
         for indicator in sensor_array.sensors:
             assert isinstance(indicator, Indicator)
-            self._display.render_image(self._slider_img, indicator.get_position())
+            images.append((self._slider_img, indicator.get_position()))
+
+        self._display.render_dynamic_images(images)
 
     def _update_record_text(self, str_text):
         hdr = "Record Bank matches:"
@@ -108,7 +111,7 @@ class Display:
 
             row_height = 20
             position = self._stack_label_pos(lbl_idx, row_height)
-            self._display.render_dynamic_text(lbl, position)
+            self._display.render_dynamic_text(lbl, position, indicator.color)
             lbl_idx += 1
 
     def _stack_label_pos(self, lbl_num, row_height):
@@ -129,7 +132,7 @@ class Display:
             self._display.render_lines(indicator.color, indicator.get_history())
 
             lbl = f"{indicator.label} {indicator.cur_val:.2f}"
-            self._display.render_dynamic_text(lbl, lbl_position)
+            self._display.render_dynamic_text(lbl, lbl_position, indicator.color)
 
             lbl_idx += 1
             lbl_position = self._row_label_pos(lbl_idx, lbl_position, indicator.num_chars)
@@ -158,5 +161,5 @@ class Display:
 
     def _show_splash(self):
         self.clear()
-        self._display.render_image(self._assets.logo, self._assets.logo_position)
+        self._display.render_static_image(self._assets.logo, self._assets.logo_position)
         self._display.render_static_text(self._assets.logo_txt, self._assets.txt_position, font_size=33)

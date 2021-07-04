@@ -21,6 +21,7 @@ class IDisplay(ABC):
         self.height = 0
         self._lgr = logger
         self._font = assets.font
+        self._verbose = False
 
     @abstractmethod
     def clear(self):
@@ -31,11 +32,15 @@ class IDisplay(ABC):
         pass
 
     @abstractmethod
-    def render_image(self, image, position):
+    def render_dynamic_images(self, images):
         pass
 
     @abstractmethod
-    def render_dynamic_text(self, text, position, font_size):
+    def render_static_image(self, image, position):
+        pass
+
+    @abstractmethod
+    def render_dynamic_text(self, text, position, color, font_size):
         pass
 
     @abstractmethod

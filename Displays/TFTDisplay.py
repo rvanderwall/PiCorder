@@ -1,7 +1,7 @@
 import numpy      # Not used here, but ensures its installed for driver
 from Logger import Logger
 from Assets import Assets
-from Displays.IDisplay import IDisplay, SF_YELLOW, BLACK
+from Displays.IDisplay import IDisplay
 try:
     import digitalio
     import board
@@ -48,36 +48,39 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         self.width, self.height = self._surface.height, self._surface.width
 
         self.large_font = assets.large_font
-        self.current_background = None
+        self._current_background = None
         self._static_text = []
+        self._curr_image_list = []
 
     def clear(self):
-        self._lgr.info("TFT: Clearing display with fill")
+        self._lgr.info("TFT: Clearing display with fill") if self._verbose else None
         self._surface.fill(0)
         self._static_text = []
-        self.current_background = None
-
-    def clear2(self):
-        self._lgr.info("TFT: Clearing display with draw")
-        image = Image.new("RGB", (self.width, self.height))
-
-        # Get drawing object to draw on image.
-        draw = ImageDraw.Draw(image)
-
-        # Draw a black filled box to clear the image.
-        draw.rectangle((0, 0, self.width, self.height), outline=0, fill=BLACK)
-        self._surface.image(image)
-        self._static_text = []
+        self._current_background = None
 
     def render_background(self, image):
-        self._lgr.info("TFT: Add Background")
-        if image == self.current_background:
+        self._lgr.info("TFT: Add Background") if self._verbose else None
+        if image == self._current_background:
             return
-        self.render_image(image, (0, 0))
-        self.current_background = image
+        self.render_static_image(image, (0, 0))
+        self._current_background = image
 
-    def render_image(self, pil_image, position):
-        self._lgr.info("TFT: Add image")
+    def render_dynamic_images(self, images):
+        # Clear out any existing images
+        for img in self._curr_image_list:
+            image = img[0]
+            position = img[1]
+            x, y = self._rotate(position[0], position[1], image.height)
+            self._clear_area((x, y), (image.width, image.height))
+
+        for img in images:
+            image = img[0]
+            position = img[1]
+            self.render_static_image(image, position)
+        self._curr_image_list = images
+
+    def render_static_image(self, pil_image, position):
+        self._lgr.info("TFT: Add image") if self._verbose else None
         if pil_image.width > self.width or pil_image.height > self.height:
             pil_image = self._scale_image(pil_image)
 
@@ -89,14 +92,14 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         self._surface.image(pil_image, x=x, y=y)
 
     def render_static_text(self, text, position, font_size=18):
-        self._lgr.info("TFT: Render static text")
+        self._lgr.info("TFT: Render static text") if self._verbose else None
         if text in self._static_text:
             return
         self._static_text.append(text)
         self.render_dynamic_text(text, position, font_size)
 
-    def render_dynamic_text(self, text, position, font_size=18):
-        self._lgr.info("TFT: Render dynamic text")
+    def render_dynamic_text(self, text, position, color, font_size=18):
+        self._lgr.info("TFT: Render dynamic text") if self._verbose else None
         if font_size > 18:
             font = self.large_font
         else:
@@ -106,7 +109,7 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         image = Image.new("RGB", (font_width, font_height))
         # Get drawing object to draw on image.
         draw = ImageDraw.Draw(image)
-        draw.text((0, 0), text, font=font, fill=SF_YELLOW)
+        draw.text((0, 0), text, font=font, fill=color)
 
         x, y = self._rotate(position[0], position[1], font_height)
         # self._lgr.info(f"TFT: txt: disp = ({self.width},{self.height})")
@@ -115,7 +118,9 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         self._surface.image(image, x=x, y=y)
 
     def render_lines(self, color, data):
-        pass
+        for point in data:
+            x, y = self._rotate(point[0], point[1], 1)
+            self._surface.pixel(x, y, color)
 
     def update(self):
         pass
@@ -142,7 +147,7 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
             return x, y
 
     def _scale_image(self, pil_image):
-        self._lgr.info("TFT: scale image")
+        self._lgr.info("TFT: scale image") if self._verbose else None
         image_ratio = pil_image.width / pil_image.height
         screen_ratio = self.width / self.height
         if screen_ratio > image_ratio:
@@ -164,5 +169,6 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         image = image.crop((x, y, x + self.width, y + self.height))
         return image
 
-    def _clear_area(self, position, size):
-        pass
+    def _clear_area(self, pos, size):
+        self._lgr.info("TFT: Clearing display area") if self._verbose else None
+        self._surface.fill_rectangle(self, pos[0], pos[1], size[0], size[1], 0)
