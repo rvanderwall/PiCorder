@@ -48,7 +48,8 @@ class IDisplay(ABC):
         pass
 
     @abstractmethod
-    def render_lines(self, color, data):
+    def render_lines(self, line_data):
+        # List of tuples (color, data)
         pass
 
     @abstractmethod

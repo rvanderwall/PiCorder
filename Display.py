@@ -124,13 +124,15 @@ class Display:
     def _update_graphs(self, sensor_array: SensorArray):
         self._display.render_background(self._grid)
 
-        lbl_idx = 0
-        lbl_position = self._row_label_pos(lbl_idx, None, 0)
-
+        lines = []
         for indicator in sensor_array.sensors:
             assert isinstance(indicator, Indicator)
-            self._display.render_lines(indicator.color, indicator.get_history())
+            lines.append((indicator.color, indicator.get_history()))
+        self._display.render_lines(lines)
 
+        lbl_idx = 0
+        lbl_position = self._row_label_pos(lbl_idx, None, 0)
+        for indicator in sensor_array.sensors:
             lbl = f"{indicator.label} {indicator.cur_val:.2f}"
             self._display.render_dynamic_text(lbl, lbl_position, indicator.color)
 

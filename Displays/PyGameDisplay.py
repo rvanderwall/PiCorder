@@ -34,9 +34,12 @@ class PyGameDisplay(IDisplay):
     def render_static_image(self, image, position):
         self._surface.blit(image, position)
 
-    def render_lines(self, color, data):
+    def render_lines(self, line_data):
         width = 3
-        pygame.draw.lines(self._surface, color, False, data, width)
+        for line in line_data:
+            color = line[0]
+            data = line[1]
+            pygame.draw.lines(self._surface, color, False, data, width)
 
     def render_dynamic_text(self, text, position, color, font_size=15):
         self._lgr.info(f"Render dynamic text {text}, {position}") if self._verbose else None

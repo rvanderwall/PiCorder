@@ -134,16 +134,19 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         # self._lgr.info(f"TFT: txt: pos = ({x},{y})")
         self._surface.image(image, x=x, y=y)
 
-    def render_lines(self, color, data):
+    def render_lines(self, line_data):
         self._lgr.info("TFT: Render lines") if self._verbose else None
-        color = color565(color)
-        print(f"Line has {len(data)} points")
-        for point in data:
-            if point[0] % 2 == 0:
-                pass
-            x, y = self._rotate(point[0], point[1], 1)
-            self._clear_area((x,y), (2,2), color)
-            self._surface.pixel(x, y, color)
+        image = Image.new("RGB", (self.width, self.height))
+        image = Image.blend(image, self._current_background, alpha=1)
+        draw = ImageDraw.Draw(image)
+        for line in line_data:
+            color = line[0]
+            data = line[1]
+            # draw.point(data, fill=color)
+            for point in data:
+                x, y = point
+                draw.line((x,y,x+1,y), fill=color, width=3)
+        self.render_static_image(image, (0, 0))
 
     def update(self):
         pass
