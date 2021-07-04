@@ -80,7 +80,7 @@ class Temp2Sensor(Sensor):
 #
 class HumiditySensor(Sensor):
     def __init__(self):
-        super().__init__(min_val=0.00, max_val=100)
+        super().__init__(min_val=0.00, max_val=100.0)
         self.info = "Relative Humidity"
 
     def get_emulation_sensor_value(self):
@@ -97,7 +97,7 @@ class HumiditySensor(Sensor):
 #
 class PressureSensor(Sensor):
     def __init__(self):
-        super().__init__(min_val=280, max_val=1280)
+        super().__init__(min_val=280., max_val=1280.00)
         self.info = "Pressure mm Hg"
 
     def get_emulation_sensor_value(self):
@@ -206,10 +206,16 @@ def get_sht_sensor():
 
 def get_bmp_sensor():
     # temperature, pressure, altitude
-    i2c = board.I2C()
-    sensor = adafruit_bmp280.Adafruit_BMP280_I2C(i2c)
-    sensor.sea_level_pressure = 1013.25
-    return sensor
+    got = False
+    retry = 0
+    while not got and retry < 2:
+        try:
+            i2c = board.I2C()
+            sensor = adafruit_bmp280.Adafruit_BMP280_I2C(i2c)
+            sensor.sea_level_pressure = 1013.25
+            return sensor
+        except:
+            retry += 1
 
 
 def get_lsm_sensors():

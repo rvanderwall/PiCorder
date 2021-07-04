@@ -37,6 +37,7 @@ class Display:
 
         # Load assets
         self._assets = assets
+        self._char_width = assets.char_width
         self._scales = assets.scales
         self._grid = assets.grid
         self._slider_img = assets.slider_img
@@ -110,21 +111,6 @@ class Display:
             self._display.render_dynamic_text(lbl, position)
             lbl_idx += 1
 
-    def _update_graphs(self, sensor_array: SensorArray):
-        self._display.render_background(self._grid)
-        lbl_idx = 0
-        row_height = 20
-        offset = 0
-        for indicator in sensor_array.sensors:
-            assert isinstance(indicator, Indicator)
-            self._display.render_lines(indicator.color, indicator.get_history())
-
-            lbl = f"{indicator.label} {indicator.cur_val:.2f}"
-            x_lbl_pos, y_lbl_pos = self._row_label_pos(lbl_idx, row_height, offset)
-            self._display.render_dynamic_text(lbl, (x_lbl_pos, y_lbl_pos), )
-            lbl_idx += 1
-            offset += indicator.text_width
-
     def _stack_label_pos(self, lbl_num, row_height):
         # Stack Vertically
         x_lbl_pos = 20
@@ -132,12 +118,40 @@ class Display:
         y_lbl_pos += lbl_num * row_height
         return x_lbl_pos, int(y_lbl_pos)
 
-    def _row_label_pos(self, lbl_num, row_height, offset):
-        # Stack Horizontally
-        x_lbl_pos = 20 + offset
-        y_lbl_pos = 206
+    def _update_graphs(self, sensor_array: SensorArray):
+        self._display.render_background(self._grid)
 
-        return x_lbl_pos, y_lbl_pos
+        lbl_idx = 0
+        lbl_position = self._row_label_pos(lbl_idx, None, 0)
+
+        for indicator in sensor_array.sensors:
+            assert isinstance(indicator, Indicator)
+            self._display.render_lines(indicator.color, indicator.get_history())
+
+            lbl = f"{indicator.label} {indicator.cur_val:.2f}"
+            self._display.render_dynamic_text(lbl, lbl_position)
+
+            lbl_idx += 1
+            lbl_position = self._row_label_pos(lbl_idx, lbl_position, indicator.num_chars)
+
+    def _row_label_pos(self, lbl_num, prev_position, prev_num_chars):
+        # Stack Horizontally
+        start_x = 20
+        start_y = 206
+        row_height = 16
+        num_labels_per_row = 3
+
+        if prev_position is None:
+            return start_x, start_y
+
+        if lbl_num == num_labels_per_row:
+            x_pos = start_x
+            y_pos = prev_position[1] + row_height
+        else:
+            x_pos = prev_position[0] + prev_num_chars * self._char_width
+            y_pos = prev_position[1]
+
+        return x_pos, y_pos
 
     def _update_to_unknown(self, mode):
         self._display.render_static_text(f"Unknown mode: {mode}", (10, 180))

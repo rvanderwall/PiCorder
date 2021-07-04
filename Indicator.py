@@ -9,7 +9,7 @@ class Indicator:
         self.reader = sensor.get_sensor_value
 
         # Rendering attributes for text
-        self.text_width = 65
+        self.num_chars = self._calc_num_chars()
         self.info_txt = sensor.info
 
         # Rendering attributes to determine Y position
@@ -43,11 +43,6 @@ class Indicator:
         self.x_position = pos
         return self
 
-    # Sets the slider X position
-    def set_text_width(self, width):
-        self.text_width = width
-        return self
-
     # Sets the color for the graph
     def set_color(self, color):
         self.color = color
@@ -68,6 +63,11 @@ class Indicator:
         for x in range(len(self.history)):
             data.append((x+self.graph_offset, self.history[x]))
         return data
+
+    def _calc_num_chars(self):
+        num_chars = len(self.label) + 1 
+        num_chars += len(str(int(self.max))) + 2  # Sensors are all 2 digit precision
+        return num_chars
 
     def _scale(self, val):
         t = self.graph_bottom - self.scale * (val - self.min)

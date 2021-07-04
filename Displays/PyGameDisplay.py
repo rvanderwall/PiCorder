@@ -33,7 +33,7 @@ class PyGameDisplay(IDisplay):
         pygame.draw.lines(self._surface, color, False, data, width)
 
     def render_dynamic_text(self, text, position, font_size=15):
-        self._lgr.info(f"Render dynamic text {text}, {position}")
+        # self._lgr.info(f"Render dynamic text {text}, {position}")
         row_height = 20
         row_size = (self.width - position[0], row_height)
         self._clear_area(position, row_size)
@@ -42,7 +42,7 @@ class PyGameDisplay(IDisplay):
         self.render_image(label, position)
 
     def render_static_text(self, text, position, font_size=15):
-        self._lgr.info(f"Render static text {text}, {position}")
+        # self._lgr.info(f"Render static text {text}, {position}")
         if text in self._static_text:
             return
         self._static_text.append(text)
@@ -54,6 +54,6 @@ class PyGameDisplay(IDisplay):
         pygame.display.update()
 
     def _clear_area(self, position, size):
-        self._lgr.info(f"Clear area {position}, {size}")
+        # self._lgr.info(f"Clear area {position}, {size}")
         rect = pygame.Rect(position[0], position[1], size[0], size[1])
         pygame.draw.rect(self._surface, BLACK, rect)

@@ -25,13 +25,13 @@ class SensorBanks:
     def __init__(self):
         self.__sensor_array = {
             om.ENVIRONMENTAL: SensorArray("E1")
-                .add_sensor(Indicator("T", TempSensor()).set_x_pos(55).set_color(RED).set_text_width(45))
+                .add_sensor(Indicator("T", TempSensor()).set_x_pos(55).set_color(RED))
                 .add_sensor(Indicator("HPA", PressureSensor()).set_x_pos(159).set_color(SF_YELLOW))
                 .add_sensor(Indicator("%RH", HumiditySensor()).set_x_pos(262).set_color(WHITE)),
 
             om.ENVIRONMENTAL2: SensorArray("E2")
-                .add_sensor(Indicator("T", TempSensor()).set_color(RED).set_text_width(45))
-                .add_sensor(Indicator("T", Temp2Sensor()).set_color(RED_ORANGE).set_text_width(45))
+                .add_sensor(Indicator("T", TempSensor()).set_color(RED))
+                .add_sensor(Indicator("T", Temp2Sensor()).set_color(RED_ORANGE))
                 .add_sensor(Indicator("HPA", PressureSensor()).set_color(SF_YELLOW))
                 .add_sensor(Indicator("%RH", HumiditySensor()).set_color(WHITE))
                 .add_sensor(Indicator("ALT", AltitudeSensor()).set_color(ORANGE)),
