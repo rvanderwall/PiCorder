@@ -1,24 +1,64 @@
 
-SHT31-D	: Standard I2C, pin 2,3
-LMS303:   Standard I2C.  SCL=SCL  SDI= SDA
+https://pinout.xyz/
+https://www.ics.com/blog/control-raspberry-pi-gpio-pins-python
+https://www.tomshardware.com/reviews/raspberry-pi-gpio-pinout,6122.html
 
-ILI9340:
-https://learn.adafruit.com/adafruit-2-8-and-3-2-color-tft-touchscreen-breakout-v2/python-wiring-and-setup
+BCM:  BroadCom:  Use GPIO Port number - Portable across versions
+BOARD:          Use Pin Number - Easier to map to hardware.
 
-DISP		PI
----------------------------
-VIN		    3.3V (pin 17)
-GND		    GND  (pin 25)
-CLK/SPI		SCK/SPI (pin 23)
-MOSI		MOSI (pin 19)
 
-LCD CS		CEO/GPIO 8 (pin 24)	# Chip Select
-D/C		    GPIO 25 (pin 22)	# Data/Command
-RESET		GPIO 24 (pin 18)
+DEVICE       PINS                        I2C  Description
+----------------------------------------------------------------------------
+SHT31-D	   Standard I2C, pin 2,3         0x44  Temp/Humidity
+BMP280                                   0x77  Pressure/Temp/Altitude
+LSM303                                   0x19  Accelerometer/Magnetometer
+
+I2C
+SDA / SDI   Pin 3   GPIO 2
+SCL / SCL   Pin 4   GPIO 3
+
+
+DISP		PI                  Rasp Pin     Description
+----------------------------------------------------
+VIN		    3.3V                pin 17
+GND		    GND                 pin 25
+CLK/SPI		SCK/SPI             pin 23      GPIO 11
+MOSI		MOSI                pin 19      GPIO 10
+
+LCD CS		SPIO CEO            pin 24      GPIO 8	# Chip Select
+D/C		    GPIO 25             pin 22          	# Data/Command
+RESET		GPIO 24             pin 18
 
 MISO        N/C
 Backlight   N/C
 
 
+ILI9340:
+https://learn.adafruit.com/adafruit-2-8-and-3-2-color-tft-touchscreen-breakout-v2/python-wiring-and-setup
 https://learn.adafruit.com/micropython-hardware-ili9341-tft-and-featherwing/circuitpython
+
+
+BUTTONS
+Button          Rasp Pin    IO
+---------------------------------
+Button 1        Pin 36      GPIO 16
+Button 2        Pin 38      GPIO 20
+Button 3        Pin 40      GPIO 21
+
+
+LEDS
+LED             Rasp Pin    IO
+-------------------------------------
+LED 1   RED     Pin 33      GPIO 13
+LED 2   GREEN   Pin 35      GPIO 19
+LED 3   BLUE    Pin 37      GPIO 26
+
+
+
+AUDIO
+---------------------------------------
+                Pin 32      GPIO 12  PWM0
+
+https://learn.adafruit.com/introducing-the-raspberry-pi-zero/audio-outputs
+https://learn.adafruit.com/adding-basic-audio-ouput-to-raspberry-pi-zero
 

@@ -6,6 +6,7 @@ from Display import Display, TFT_ALLOWED
 from Logger import Logger
 from ModeTransitions import ModeMapper, Commands
 from ModeTransitions import TricorderMode, OperationMode
+from Output import LEDS
 from Records import Records
 from SensorBanks import SensorBanks
 
@@ -19,6 +20,8 @@ def build_tricorder(hw_mode):
     sensor_array = SensorBanks()
     tricorder = Tricorder(logger, display, sensor_array, mode_mapper, mode)
     tricorder._records = Records(assets)
+    leds = LEDS(logger)
+    leds.turn_on_red_led()
     return tricorder
 
 

@@ -3,7 +3,7 @@ import sys
 import pygame
 from pygame.locals import *
 
-from Inputs import get_mode_select, ButtonPress, KBInput, BUTTON_QUIT
+from Inputs import get_mode_select, KeyboardInput, ButtonInput, BUTTON_QUIT
 from Tricorder import build_tricorder
 
 
@@ -16,7 +16,7 @@ def init():
 
 
 def pg_game_loop(tricorder):
-    inp = ButtonPress(tricorder.logger)
+    inp = KeyboardInput(tricorder.logger)
     tricorder.refresh()
     while True:
         tricorder.update_sensors()
@@ -35,7 +35,7 @@ def pg_game_loop(tricorder):
 
 
 def game_loop(tricorder):
-    kb = KBInput(tricorder.logger)
+    kb = ButtonInput(tricorder.logger)
     tricorder.refresh()
     while True:
         tricorder.update_sensors()

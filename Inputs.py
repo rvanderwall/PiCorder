@@ -6,9 +6,16 @@ from select import select
 import pygame
 from Logger import Logger
 
-BUTTON1 = GPIO13	# Pin 33
-BUTTON2 = GPIO19	# Pin 35
-BUTTON3 = GPIO26	# Pin 37
+try:
+    import RPi.GPIO as GPIO
+    USE_HW_BUTTONS = True
+except:
+    USE_HW_BUTTONS = False
+
+
+BUTTON1_PIN = 13    # GPIO 13 / Pin 33
+BUTTON2_PIN = 19    # GPIO 19 / Pin 35
+BUTTON3_PIN = 26    # GPIO 26 / Pin 37
 
 BUTTON_A = 0
 BUTTON_B = 1
@@ -20,6 +27,39 @@ def get_mode_select():
     # bit 0 => TFT
     # bit 1 => Demo 
     return 1
+
+
+class ButtonHit:
+    def __init__(self):
+        GPIO.setmode(GPIO.BCM)  # Use BCM GPIO Numbering Scheme
+
+        GPIO.setup(BUTTON1_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(BUTTON2_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(BUTTON3_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+        self.__button = None
+
+    def set_normal(self):
+        GPIO.cleanup()
+
+    def getch(self):
+        return self.__button
+
+    def kbhit(self):
+        if GPIO.input(BUTTON1_PIN) == 0:
+            self.__button = 'a'
+            return True
+
+        if GPIO.input(BUTTON2_PIN) == 0:
+            self.__button = 'b'
+            return True
+
+        if GPIO.input(BUTTON3_PIN) == 0:
+            self.__button = 'c'
+            return True
+
+        self.__button = None
+        return False
 
 
 class KBHit:
@@ -34,9 +74,9 @@ class KBHit:
         termios.tcsetattr(self.fd, termios.TCSAFLUSH, self.new_term)
 
         # Support normal-terminal reset at exit
-        atexit.register(self.set_normal_term)
+        atexit.register(self.set_normal)
 
-    def set_normal_term(self):
+    def set_normal(self):
         termios.tcsetattr(self.fd, termios.TCSAFLUSH, self.old_term)
 
     def getch(self):
@@ -47,15 +87,18 @@ class KBHit:
         return dr != []
 
 
-class KBInput:
+class ButtonInput:
     def __init__(self, logger: Logger):
-        self.kb = KBHit()
+        if USE_HW_BUTTONS:
+            self.btnReader = ButtonHit()
+        else:
+            self.btnReader = KBHit()
         self._log = logger.info
         self.current_button = None
 
     def get_button_press(self):
-        if self.kb.kbhit():
-            c = self.kb.getch()
+        if self.btnReader.kbhit():
+            c = self.btnReader.getch()
             if ord(c) == 120 or ord(c) == 27:  # 'x' or ESC
                 self._log("You pressed the Done button")
                 self.current_button = BUTTON_QUIT
@@ -74,10 +117,10 @@ class KBInput:
         return self.current_button
 
     def close(self):
-        self.kb.set_normal_term()
+        self.btnReader.set_normal()
 
 
-class ButtonPress:
+class KeyboardInput:
     def __init__(self, logger: Logger):
         self._log = logger.info
         self.current_button = None

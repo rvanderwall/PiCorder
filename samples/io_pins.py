@@ -1,14 +1,17 @@
 from time import sleep
 import RPi.GPIO as GPIO
 
-GPIO.setmode(GPIO.BCM)	# Use BCM GPIO Numbering Scheme
+
+GPIO.setmode(GPIO.BCM)  # Use BCM GPIO Numbering Scheme
+
 
 # GPIO21, pin 40
-INPUT_PIN=21
-GPIO.setup(INPUT_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)	# Set it as input pin
+INPUT_PIN = 21
+GPIO.setup(INPUT_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Set it as input pin
 
-OUTPUT_PIN=20
-GPIO.setup(OUTPUT_PIN, GPIO.OUT)	# Set it as output pin
+
+OUTPUT_PIN = 20
+GPIO.setup(OUTPUT_PIN, GPIO.OUT)  # Set it as output pin
 
 
 while True:

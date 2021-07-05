@@ -54,6 +54,9 @@ but they look really well constructed.
 - SensorArray: Collection of sensors for each mode.
 - Tricorder: overall coordination and modes: demo, live, simulated.
 
+# References
+- https://www.ics.com/blog/control-raspberry-pi-gpio-pins-python
+
 ```
 > cd <project>
 > python3 -m venv venv
