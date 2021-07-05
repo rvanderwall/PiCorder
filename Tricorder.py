@@ -50,9 +50,11 @@ class Tricorder:
         return mode
 
     def update_sensors(self):
-        sensor_array = self._sensor_banks.get_sensor_array(self._operating_mode())
-        for indicator in sensor_array.sensors:
-            indicator.update_value()
+        # Update ALL sensors with history, not just the ones we are looking at
+        for mode in [OperationMode.ENVIRONMENTAL, OperationMode.ENVIRONMENTAL2, self._operating_mode()]:
+            sensor_array = self._sensor_banks.get_sensor_array(mode)
+            for indicator in sensor_array.sensors:
+                indicator.update_value()
 
     def update_display(self):
         disp_mode = self._display_mode()

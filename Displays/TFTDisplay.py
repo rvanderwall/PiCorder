@@ -135,7 +135,7 @@ class TFT_Display(IDisplay):  # pylint: disable=camel-case
         self._surface.image(image, x=x, y=y)
 
     def render_lines(self, line_data):
-        self._lgr.info("TFT: Render lines") if self._verbose else None
+        self._lgr.info(f"TFT: Render {len(line_data)} lines") if self._verbose else None
         image = Image.new("RGB", (self.width, self.height))
         image = Image.blend(image, self._current_background, alpha=1)
         draw = ImageDraw.Draw(image)
