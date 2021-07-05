@@ -1,0 +1,7 @@
+
+PWM0 = GPIO12	# Pin 32
+LED1 = GPIO16	# Pin 36
+LED2 = GPIO20	# Pin 38
+LED3 = GPIO21	# Pin 40
+
+

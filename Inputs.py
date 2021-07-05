@@ -6,6 +6,9 @@ from select import select
 import pygame
 from Logger import Logger
 
+BUTTON1 = GPIO13	# Pin 33
+BUTTON2 = GPIO19	# Pin 35
+BUTTON3 = GPIO26	# Pin 37
 
 BUTTON_A = 0
 BUTTON_B = 1
