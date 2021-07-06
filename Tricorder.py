@@ -20,8 +20,7 @@ def build_tricorder(hw_mode):
     sensor_array = SensorBanks()
     tricorder = Tricorder(logger, display, sensor_array, mode_mapper, mode)
     tricorder._records = Records(assets)
-    leds = LEDS(logger)
-    leds.turn_on_red_led()
+    tricorder._leds = LEDS(logger)
     return tricorder
 
 
@@ -36,6 +35,7 @@ class Tricorder:
 
         self._outputs = None
         self._records = None
+        self._leds = None
 
         self.mode = mode
 
@@ -103,13 +103,26 @@ class Tricorder:
         self._mode_mapper.enter_mode(OperationMode.ENVIRONMENTAL)
         self._init_sensors()
 
-    @staticmethod
-    def _init_sensors():
+    def _init_sensors(self):
         # Just give time for them to warm up
-        sleep(2)
+        self._blink_red()
 
     def _operating_mode(self):
         return self._mode_mapper.current_op_mode
 
     def _display_mode(self):
         return self._mode_mapper.current_disp_mode
+
+    def _blink_red(self):
+        assert isinstance(self._leds, LEDS)
+        self._leds.turn_on_blue_led()
+        self._leds.turn_on_green_led()
+        self._leds.turn_on_red_led()
+        for i in range(4):
+            sleep(0.2)
+            self._leds.turn_off_red_led()
+            sleep(0.2)
+            self._leds.turn_on_red_led()
+
+        self._leds.turn_off_blue_led()
+        self._leds.turn_off_green_led()

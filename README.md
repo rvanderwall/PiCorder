@@ -78,6 +78,13 @@ but they look really well constructed.
 > pip install AdaFruit-GPIO
 # Enable I2C:  Config->Interfaces
 # Enable SPI: raspi-config->Interface
+# 
+# Disable boot UI
+> sudo raspi-config
+# --> Boot options B1: Choose console
+#
+# Add start script to init.d
+> cp start_tricorder.sh /etc/init.d
 ```
 
 
