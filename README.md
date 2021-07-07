@@ -81,7 +81,7 @@ but they look really well constructed.
 # 
 # Disable boot UI
 > sudo raspi-config
-# --> Boot options B1: Choose console
+# --> System Options --> Boot options --> B2: Choose console/auto login
 #
 # Add start script to init.d
 > cp start_tricorder.sh /etc/init.d
