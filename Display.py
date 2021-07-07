@@ -49,13 +49,15 @@ class Display:
         self._frame_rate.tick(self._display.FPS)
 
     def update(self, mode, data_src):
-        self._lgr.info("Display: Update")
+        # self._lgr.info("Display: Update")
         if self._prev_mode != mode or self._prev_data != data_src:
             self.clear()
             self._prev_mode = mode
             self._prev_data = data_src
         if mode == DisplayMode.SPLASH:
             self._show_splash()
+        elif mode == DisplayMode.MENU:
+            self._show_menu(data_src)
         elif isinstance(data_src, Record):
             self._update_records_disp(mode, data_src)
         else:
@@ -94,6 +96,15 @@ class Display:
         hdr = "Record Bank matches:"
         self._display.render_static_text(hdr, (20, 20))
         self._display.render_static_text(str_text, (20, 50))
+
+    def _show_menu(self, menu_items):
+        hdr = "Please Select:"
+        x = 20
+        y = 20
+        self._display.render_static_text(hdr, (x, y))
+        for menu_item in menu_items:
+            y += 30
+            self._display.render_static_text(menu_item, (x, y))
 
     def _update_sensor_text(self, sensor_array: SensorArray):
         lbl_idx = 0

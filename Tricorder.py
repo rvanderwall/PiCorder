@@ -1,10 +1,11 @@
 from time import sleep
+import os
 import pygame
 
 from Assets import Assets
 from Display import Display, TFT_ALLOWED
 from Logger import Logger
-from ModeTransitions import ModeMapper, Commands
+from ModeTransitions import ModeMapper, Commands, config_menu
 from ModeTransitions import TricorderMode, OperationMode
 from Output import LEDS
 from Records import Records
@@ -21,7 +22,7 @@ def build_tricorder(hw_mode):
     tricorder = Tricorder(logger, display, sensor_array, mode_mapper, mode)
     tricorder._records = Records(assets)
     tricorder._leds = LEDS(logger)
-    return tricorder
+    return tricorder, tricorder._leds
 
 
 class Tricorder:
@@ -67,6 +68,8 @@ class Tricorder:
             self._display.update(disp_mode, current_record)
         elif operating_mode == OperationMode.INIT:
             self._display.update(disp_mode, [])
+        elif operating_mode == OperationMode.CONFIGURE:
+            self._display.update(disp_mode, config_menu)
         else:
             sensor_array = self._sensor_banks.get_sensor_array(operating_mode)
             self._display.update(disp_mode, sensor_array)
@@ -94,6 +97,9 @@ class Tricorder:
             self._records.next_record()
         elif command == Commands.TERMINATE:
             pass    # Handled in outer event loop
+        elif command == Commands.POWERDOWN:
+            self.logger.info("POWERING DOWN NOW!!!!")
+            os.system("sudo shutdown -h now")
         else:
             pass
 
@@ -108,10 +114,10 @@ class Tricorder:
         self._blink_red()
 
     def _operating_mode(self):
-        return self._mode_mapper.current_op_mode
+        return self._mode_mapper.get_op_mode()
 
     def _display_mode(self):
-        return self._mode_mapper.current_disp_mode
+        return self._mode_mapper.get_disp_mode()
 
     def _blink_red(self):
         assert isinstance(self._leds, LEDS)
