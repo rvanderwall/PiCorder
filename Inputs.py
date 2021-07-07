@@ -13,9 +13,9 @@ except:
     USE_HW_BUTTONS = False
 
 
-BUTTON1_PIN = 13    # GPIO 13 / Pin 33
-BUTTON2_PIN = 19    # GPIO 19 / Pin 35
-BUTTON3_PIN = 26    # GPIO 26 / Pin 37
+BUTTON1_PIN = 16    # GPIO 16 / Pin 36
+BUTTON2_PIN = 20    # GPIO 20 / Pin 38
+BUTTON3_PIN = 21    # GPIO 21 / Pin 40
 
 BUTTON_A = 0
 BUTTON_B = 1

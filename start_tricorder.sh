@@ -10,7 +10,7 @@
 # Description:       Enable service provided by daemon.
 ### END INIT INFO
 
-cd /home/raspi/projects/PiCorder/t_env
+cd /home/pi/projects/PiCorder/t_env
 source bin/activate
-cd /home/raspi/projects/PiCorder
+cd /home/pi/projects/PiCorder
 python main.py &

@@ -6,9 +6,9 @@ except:
     USE_HW_LEDS = False
 
 PWM0_PIN = 12  # GPIO 12 / Pin 32
-LED1_PIN = 16  # GPIO 16 / Pin 36
-LED2_PIN = 20  # GPIO 20 / Pin 38
-LED3_PIN = 21  # GPIO 21 / Pin 40
+LED1_PIN = 13  # GPIO 13 / Pin 33
+LED2_PIN = 19  # GPIO 19 / Pin 35
+LED3_PIN = 26  # GPIO 26 / Pin 37
 
 
 class LEDBank:
@@ -20,7 +20,7 @@ class LEDBank:
         GPIO.setup(LED3_PIN, GPIO.OUT)
 
         self._red = 0
-        self._green = 0
+        self._yellow = 0
         self._blue = 0
 
     def turn_on_led(self, led_num):
@@ -44,7 +44,7 @@ class MockLEDBank:
 class LEDS:
     def __init__(self, logger: Logger):
         self._red_led = LED1_PIN
-        self._green_led = LED2_PIN
+        self._yellow_led = LED2_PIN
         self._blue_led = LED3_PIN
 
         if USE_HW_LEDS:
@@ -58,11 +58,11 @@ class LEDS:
     def turn_off_red_led(self):
         self._leds.turn_off_led(self._red_led)
 
-    def turn_on_green_led(self):
-        self._leds.turn_on_led(self._green_led)
+    def turn_on_yellow_led(self):
+        self._leds.turn_on_led(self._yellow_led)
 
-    def turn_off_green_led(self):
-        self._leds.turn_off_led(self._green_led)
+    def turn_off_yellow_led(self):
+        self._leds.turn_off_led(self._yellow_led)
 
     def turn_on_blue_led(self):
         self._leds.turn_on_led(self._blue_led)

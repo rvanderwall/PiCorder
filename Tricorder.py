@@ -116,7 +116,7 @@ class Tricorder:
     def _blink_red(self):
         assert isinstance(self._leds, LEDS)
         self._leds.turn_on_blue_led()
-        self._leds.turn_on_green_led()
+        self._leds.turn_on_yellow_led()
         self._leds.turn_on_red_led()
         for i in range(4):
             sleep(0.2)
@@ -125,4 +125,4 @@ class Tricorder:
             self._leds.turn_on_red_led()
 
         self._leds.turn_off_blue_led()
-        self._leds.turn_off_green_led()
+        self._leds.turn_off_yellow_led()

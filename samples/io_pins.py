@@ -10,7 +10,7 @@ INPUT_PIN = 21
 GPIO.setup(INPUT_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Set it as input pin
 
 
-OUTPUT_PIN = 20
+OUTPUT_PIN = 26
 GPIO.setup(OUTPUT_PIN, GPIO.OUT)  # Set it as output pin
 
 
