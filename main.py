@@ -34,8 +34,8 @@ def pg_game_loop(tricorder):
         tricorder.refresh()
 
 
-def game_loop(tricorder):
-    kb = ButtonInput(tricorder.logger)
+def game_loop(tricorder, leds):
+    kb = ButtonInput(tricorder.logger, leds)
     tricorder.refresh()
     while True:
         tricorder.update_sensors()
@@ -51,10 +51,10 @@ def game_loop(tricorder):
 
 
 def main():
-    t = init()
+    t, leds = init()
     if t.mode.TFT:
         # Can't use pygame loop without display
-        game_loop(t)
+        game_loop(t, leds)
     else:
         pg_game_loop(t)
 

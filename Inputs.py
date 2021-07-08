@@ -1,10 +1,12 @@
 import sys
 import termios
+from time import sleep
 import atexit
 from select import select
 
 import pygame
 from Logger import Logger
+from Output import LEDS
 
 try:
     import RPi.GPIO as GPIO
@@ -30,7 +32,7 @@ def get_mode_select():
 
 
 class ButtonHit:
-    def __init__(self):
+    def __init__(self, leds: LEDS):
         GPIO.setmode(GPIO.BCM)  # Use BCM GPIO Numbering Scheme
 
         GPIO.setup(BUTTON1_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -38,6 +40,7 @@ class ButtonHit:
         GPIO.setup(BUTTON3_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
         self.__button = None
+        self._leds = leds
 
     def set_normal(self):
         GPIO.cleanup()
@@ -47,19 +50,32 @@ class ButtonHit:
 
     def kbhit(self):
         if GPIO.input(BUTTON1_PIN) == 0:
+            self._debounce(BUTTON1_PIN)
             self.__button = 'a'
             return True
 
         if GPIO.input(BUTTON2_PIN) == 0:
+            self._debounce(BUTTON2_PIN)
             self.__button = 'b'
             return True
 
         if GPIO.input(BUTTON3_PIN) == 0:
+            self._debounce(BUTTON3_PIN)
             self.__button = 'c'
             return True
 
         self.__button = None
         return False
+
+    def _debounce(self, pin):
+        # Turn on the LED, make sure the button is pressed, then wait for
+        # it to be unpressed
+        self._leds.turn_on_yellow_led()
+        while GPIO.input(pin) == 1:
+            sleep(0.1)
+        while GPIO.input(pin) == 0:
+            sleep(0.1)
+        self._leds.turn_off_yellow_led()
 
 
 class KBHit:
@@ -88,9 +104,9 @@ class KBHit:
 
 
 class ButtonInput:
-    def __init__(self, logger: Logger):
+    def __init__(self, logger: Logger, leds):
         if USE_HW_BUTTONS:
-            self.btnReader = ButtonHit()
+            self.btnReader = ButtonHit(leds)
         else:
             self.btnReader = KBHit()
         self._log = logger.info
