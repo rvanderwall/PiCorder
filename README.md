@@ -83,8 +83,10 @@ but they look really well constructed.
 > sudo raspi-config
 # --> System Options --> Boot options --> B2: Choose console/auto login
 #
-# Add start script to init.d
-> cp start_tricorder.sh /etc/init.d
+# Add start script to /etc/rc.local
+> Add this line:
+> 
+#
 ```
 
 

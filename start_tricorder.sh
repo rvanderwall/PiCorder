@@ -4,10 +4,10 @@
 # Provides:          start_tricorder.sh
 # Required-Start:    $remote_fs $syslog
 # Required-Stop:     $remote_fs $syslog
-# Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
-# Short-Description: Start daemon at boot time
-# Description:       Enable service provided by daemon.
+# Default-Start:     3
+# Default-Stop:      0 1 2 4 5 6
+# Short-Description: Start tricorder at boot time
+# Description:       Enable tricorder application.
 ### END INIT INFO
 
 cd /home/pi/projects/PiCorder/t_env
