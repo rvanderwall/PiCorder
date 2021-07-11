@@ -6,7 +6,7 @@ except:
     USE_HW_LEDS = False
 
 PWM0_PIN = 12  # GPIO 12 / Pin 32
-LED1_PIN = 13  # GPIO 13 / Pin 33
+LED1_PIN = 20  # GPIO 20 / Pin 38
 LED2_PIN = 19  # GPIO 19 / Pin 35
 LED3_PIN = 26  # GPIO 26 / Pin 37
 
