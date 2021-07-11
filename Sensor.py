@@ -18,6 +18,7 @@ lg = Logger("Startup")
 lg.info(f"Entering sensor {SENSOR_MODE} mode")
 
 
+
 class Sensor(ABC):
     def __init__(self, min_val: float, max_val: float):
         self.min = min_val

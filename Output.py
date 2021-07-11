@@ -69,3 +69,9 @@ class LEDS:
 
     def turn_off_blue_led(self):
         self._leds.turn_off_led(self._blue_led)
+
+    def power_down(self):
+        self._leds.turn_off_led(self._red_led)
+        self._leds.turn_off_led(self._yellow_led)
+        self._leds.turn_off_led(self._blue_led)
+

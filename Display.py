@@ -65,6 +65,10 @@ class Display:
 
         self._display.update()
 
+    def powerdown(self):
+        self.clear()
+        self._display.render_static_text("POWERING DOWN", self._assets.txt_position, font_size=33)
+
     def _update_records_disp(self, mode, data_src):
         if mode == DisplayMode.VIDEO:
             self._display.render_static_image(data_src.image, (0, 0))

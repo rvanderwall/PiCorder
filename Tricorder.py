@@ -1,5 +1,6 @@
 from time import sleep
 import os
+import sys
 import pygame
 
 from Assets import Assets
@@ -9,7 +10,7 @@ from ModeTransitions import ModeMapper, Commands, config_menu
 from ModeTransitions import TricorderMode, OperationMode
 from Output import LEDS
 from Records import Records
-from SensorBanks import SensorBanks
+from SensorBanks import SensorBanks, power_down_sensors
 
 
 def build_tricorder(hw_mode):
@@ -99,7 +100,12 @@ class Tricorder:
             pass    # Handled in outer event loop
         elif command == Commands.POWERDOWN:
             self.logger.info("POWERING DOWN NOW!!!!")
+            self._leds.power_down()
+            power_down_sensors()
+            self._display.powerdown()
             os.system("sudo shutdown -h now")
+            os.system("sudo poweroff")
+            sys.exit(0)
         else:
             pass
 

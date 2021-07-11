@@ -7,6 +7,14 @@ from Displays.IDisplay import RED, RED_ORANGE, SF_YELLOW, WHITE, ORANGE
 from ModeTransitions import OperationMode as OpMode
 
 
+def power_down_sensors():
+    try:
+        import RPi.GPIO as GPIO
+        GPIO.cleanup()
+    except:
+        pass
+
+
 #
 #  This is really an indicator array, rather than a sensor array
 #  but I want to be consistent with terminology from the ST universe.
