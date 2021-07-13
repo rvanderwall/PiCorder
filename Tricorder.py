@@ -101,8 +101,8 @@ class Tricorder:
         elif command == Commands.POWERDOWN:
             self.logger.info("POWERING DOWN NOW!!!!")
             self._leds.power_down()
-            power_down_sensors()
             self._display.powerdown()
+            power_down_sensors()
             os.system("sudo shutdown -h now")
             os.system("sudo poweroff")
             sys.exit(0)
